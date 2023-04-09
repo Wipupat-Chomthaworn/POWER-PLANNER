@@ -19,7 +19,7 @@
           <tr v-for="(group, index) in groups" :key="index">
             <td class="px-4 py-2 font-semibold text-gray-900" :style="{ backgroundColor: group.color }">{{ group.name }}
             </td>
-            <td class="px-4 py-2" v-for="(task,index) in group.task_name"></td>
+            <td class="px-4 py-2" v-for="(task, index) in group.task_name"></td>
           </tr>
           <tr v-for="(task, index) in selectedTasks" :key="index">
             <td class="px-4 py-2"></td>
@@ -56,43 +56,80 @@
     </div>
   </div>
 </template>
-
+  
 <script>
 import SideBar from '../components/SideBar.vue'
 
 export default {
   data() {
     return {
-      groups: [
-        { name: "Personal", color: "#FCD34D" },
-        { name: "Work", color: "#6EE7B7" },
-        { name: "School", color: "#63B3ED" },
-      ],
-      tasks: [
+      "groups": [
         {
-          group: "Personal",
-          task_name: "Go to the gym",
-          task_desc: "Do some cardio and lift weights",
-          task_status: "Not Done",
-          notify_preference: true,
-          sub_tasks: ["Stretch", "30 minutes of cardio", "Weightlifting"]
+          "name": "Personal",
+          "color": "pink",
+          "tasks": [
+            {
+              "task_name": "Workout",
+              "task_desc": "Jog for 30 minutes, do 20 pushups, and stretch for 10 minutes",
+              "task_status": "not done",
+              "notify_preference": "yes",
+              "subtasks": [
+                {
+                  "subtask_name": "Jog for 30 minutes",
+                  "subtask_status": "not done"
+                },
+                {
+                  "subtask_name": "Do 20 pushups",
+                  "subtask_status": "not done"
+                },
+                {
+                  "subtask_name": "Stretch for 10 minutes",
+                  "subtask_status": "not done"
+                }
+              ]
+            },
+            {
+              "task_name": "Groceries",
+              "task_desc": "Buy milk, bread, and eggs",
+              "task_status": "done",
+              "notify_preference": "no",
+              "subtasks": []
+            }
+          ]
         },
         {
-          group: "Work",
-          task_name: "Finish project report",
-          task_desc: "Prepare a summary of project progress and submit to manager",
-          task_status: "Done",
-          notify_preference: false,
-          sub_tasks: ["Gather data", "Analyze data", "Create report"]
-        },
-        {
-          group: "School",
-          task_name: "Study for exams",
-          task_desc: "Review notes and complete practice problems",
-          task_status: "Not Done",
-          notify_preference: true,
-          sub_tasks: ["Create study plan", "Read and take notes", "Complete practice problems"]
-        },
+          "name": "Work",
+          "color": "purple",
+          "tasks": [
+            {
+              "task_name": "Meeting with boss",
+              "task_desc": "Discuss project timeline and deliverables",
+              "task_status": "not done",
+              "notify_preference": "yes",
+              "subtasks": []
+            },
+            {
+              "task_name": "Submit report",
+              "task_desc": "Compile weekly progress report for team",
+              "task_status": "not done",
+              "notify_preference": "yes",
+              "subtasks": [
+                {
+                  "subtask_name": "Gather data",
+                  "subtask_status": "not done"
+                },
+                {
+                  "subtask_name": "Write report",
+                  "subtask_status": "not done"
+                },
+                {
+                  "subtask_name": "Review report",
+                  "subtask_status": "not done"
+                }
+              ]
+            }
+          ]
+        }
       ],
       selectedGroup: "Personal",
       selectedTasks: [],
@@ -130,77 +167,77 @@ export default {
   components: { SideBar }
 }
 </script>
+    
   
-
-<!-- <template>
-    <SideBar></SideBar>
-    <div class="bg-gray-100 py-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold mb-4">Task Groups</h1>
-        <div class="overflow-x-auto">
-          <table class="table-auto border">
-            <thead>
-              <tr>
-                <th class="px-4 py-2 border"></th>
-                <th class="px-4 py-2 border">Name</th>
-                <th class="px-4 py-2 border">Color</th>
-                <th class="px-4 py-2 border">Group Tasks</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(group, index) in groups" :key="index">
-                <td class="px-4 py-2 border">{{ index + 1 }}</td>
-                <td class="px-4 py-2 border">{{ group.name }}</td>
-                <td class="px-4 py-2 border">
-                  <div class="bg-{{ group.color }}-500 rounded-md h-6 w-6"></div>
-                </td>
-                <td class="px-4 py-2 border">
-                  <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    @click="toggleTasks(index)"
-                  >
-                    {{ group.showTasks ? 'Hide Tasks' : 'Show Tasks' }}
-                  </button>
-                  <ul v-if="group.showTasks" class="list-disc pl-4">
-                    <li v-for="(task, index) in group.tasks" :key="index">
-                      <span class="font-bold">{{ task.name }}:</span>
-                      <ul class="list-disc pl-4">
-                        <li v-for="(subtask, index) in task.subtasks" :key="index">
-                          {{ subtask }}
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <!-- <template>
+      <SideBar></SideBar>
+      <div class="bg-gray-100 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold mb-4">Task Groups</h1>
+          <div class="overflow-x-auto">
+            <table class="table-auto border">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2 border"></th>
+                  <th class="px-4 py-2 border">Name</th>
+                  <th class="px-4 py-2 border">Color</th>
+                  <th class="px-4 py-2 border">Group Tasks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(group, index) in groups" :key="index">
+                  <td class="px-4 py-2 border">{{ index + 1 }}</td>
+                  <td class="px-4 py-2 border">{{ group.name }}</td>
+                  <td class="px-4 py-2 border">
+                    <div class="bg-{{ group.color }}-500 rounded-md h-6 w-6"></div>
+                  </td>
+                  <td class="px-4 py-2 border">
+                    <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      @click="toggleTasks(index)"
+                    >
+                      {{ group.showTasks ? 'Hide Tasks' : 'Show Tasks' }}
+                    </button>
+                    <ul v-if="group.showTasks" class="list-disc pl-4">
+                      <li v-for="(task, index) in group.tasks" :key="index">
+                        <span class="font-bold">{{ task.name }}:</span>
+                        <ul class="list-disc pl-4">
+                          <li v-for="(subtask, index) in task.subtasks" :key="index">
+                            {{ subtask }}
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </template>
-  
-  <script>
-  import data from '@/data/tasks.json';
-  
-  export default {
-    data() {
-      return {
-        groups: data.groups.map(group => ({
-          ...group,
-          showTasks: false,
-        })),
-      };
-    },
-    methods: {
-      toggleTasks(index) {
-        this.groups[index].showTasks = !this.groups[index].showTasks;
+    </template>
+    
+    <script>
+    import data from '@/data/tasks.json';
+    
+    export default {
+      data() {
+        return {
+          groups: data.groups.map(group => ({
+            ...group,
+            showTasks: false,
+          })),
+        };
       },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  /* Add Tailwind CSS classes here */
-  </style>
-   -->
+      methods: {
+        toggleTasks(index) {
+          this.groups[index].showTasks = !this.groups[index].showTasks;
+        },
+      },
+    };
+    </script>
+    
+    <style scoped>
+    /* Add Tailwind CSS classes here */
+    </style>
+     -->

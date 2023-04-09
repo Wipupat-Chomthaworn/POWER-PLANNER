@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Sign from "../pages/Sign.vue";
+import Sign from "../pages/LoginandSignup.vue";
 import Notfound from "../pages/404.vue";
 // import Calendar from "../pages/Calendar.vue";
 import Profile from "../pages/Profile.vue";
