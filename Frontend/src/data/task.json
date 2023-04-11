@@ -1,0 +1,70 @@
+{
+    "groups": [
+      {
+        "name": "Personal",
+        "color": "pink",
+        "tasks": [
+          {
+            "task_name": "Workout",
+            "task_desc": "Jog for 30 minutes, do 20 pushups, and stretch for 10 minutes",
+            "task_status": "not done",
+            "notify_preference": "yes",
+            "subtasks": [
+              {
+                "subtask_name": "Jog for 30 minutes",
+                "subtask_status": "not done"
+              },
+              {
+                "subtask_name": "Do 20 pushups",
+                "subtask_status": "not done"
+              },
+              {
+                "subtask_name": "Stretch for 10 minutes",
+                "subtask_status": "not done"
+              }
+            ]
+          },
+          {
+            "task_name": "Groceries",
+            "task_desc": "Buy milk, bread, and eggs",
+            "task_status": "done",
+            "notify_preference": "no",
+            "subtasks": []
+          }
+        ]
+      },
+      {
+        "name": "Work",
+        "color": "purple",
+        "tasks": [
+          {
+            "task_name": "Meeting with boss",
+            "task_desc": "Discuss project timeline and deliverables",
+            "task_status": "not done",
+            "notify_preference": "yes",
+            "subtasks": []
+          },
+          {
+            "task_name": "Submit report",
+            "task_desc": "Compile weekly progress report for team",
+            "task_status": "not done",
+            "notify_preference": "yes",
+            "subtasks": [
+              {
+                "subtask_name": "Gather data",
+                "subtask_status": "not done"
+              },
+              {
+                "subtask_name": "Write report",
+                "subtask_status": "not done"
+              },
+              {
+                "subtask_name": "Review report",
+                "subtask_status": "not done"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
