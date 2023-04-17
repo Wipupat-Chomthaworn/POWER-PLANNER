@@ -17,7 +17,7 @@
           </button>
           <a href="/home" class="flex ml-2 md:mr-24">
             <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 mr-3" alt="FlowBite Logo" />
-            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Flowbite</span>
+            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Power Planner</span>
           </a>
         </div>
         <div class="flex items-center">

@@ -6,11 +6,12 @@
 </template>
 
 <script>
+// import axios from "axios";
 import navbar from '../components/Navbar.vue'
 export default {
   name: 'App',
   components: {
-    navbar
+    navbar,
   },
   data () {
     return {

@@ -80,22 +80,46 @@
           <p v-else class="text-red-500">Passwords do not match!</p>
         </div>
 
-
         <button class="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           :class="{ 'bg-green-500': passwordsMatch, 'bg-red-500': !passwordsMatch }" type="submit"
           :disabled="!passwordsMatch">
           Sign Up
         </button>
       </form>
-      <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" v-if="mode === 'login'">
+      <form @submit.prevent="login" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" v-show="mode === 'log'">
         <!-- Login form fields -->
-        ...
+        <div class="mb-6">
+          <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username OR Email
+          </label>
+          <input
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="name@flowbite.com" v-model="loginData.email" required>
+        </div>
+        <div class="mb-6">
+          <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+            password</label>
+          <input type="password" id="log-password" v-model="loginData.password"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required>
+        </div>
+        <!-- <div class="flex items-start mb-6">
+            <div class="flex items-center h-5">
+              <input id="remember" type="checkbox" value=""
+                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+                required>
+            </div>
+            <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</label>
+          </div> -->
+        <button type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+
       </form>
     </div>
   </div>
 </template>
   
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -122,17 +146,48 @@ export default {
         ;
     },
     methods: {
-      signup() {
-        if (this.password = this.confirmpassword) { }
-        else {
-          console.alert("Please check your password")
-        }
+      async signup() {
+        console.log('signup');
+
         // Handle Sign Up form submission here
       },
-      login() {
-        // Handle Log In form submission here
+      async login() {
+        try {
+          console.log('login', loginData);
+          // Handle Log In form submission here
+
+          await axios.post('http://localhost:3000/log', { params: { email: this.loginData.email, password: this.loginData.password } })
+            .then(response => {
+              console.log(response);
+              if (response.status === 200) {
+                router.push('/remaining');
+              }
+            });
+        } catch (error) {
+          console.error(error.response.data);
+          alert(error.response.data);
+        }
+
+        //   axios.post('http://localhost:3000/log', {
+        //     email: this.loginData.email,
+        //     password: this.loginData.password
+        //   })
+        //   .then(response => {
+        //     // Handle successful login
+        //     console.log('Login successful:', response.data);
+        //     alert('Log in success');
+        //   })
+        //   .catch(error => {
+        //     // Handle login error
+        //     console.error('Login error:', error);
+        //     // Show error message to user, e.g. using a toast or alert
+        //     alert('Log in failed. Please check your email and password.');
+        //   });
+        //   },
+        // },
+
       },
-    },
+    }
   }
 }
 </script>

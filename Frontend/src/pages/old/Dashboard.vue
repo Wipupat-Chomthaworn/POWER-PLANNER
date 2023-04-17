@@ -7,10 +7,10 @@
 
 
   <script>
-  import Navbar from '../components/old/Navbar old.vue'
-  import ListBook from '../components/old/ListBook.vue'
+  import Navbar from '../../components/old/Navbar old.vue'
+  import ListBook from '../../components/old/ListBook.vue'
 
-  import CarouselBar from '../components/old/CarouselBar.vue'
+  import CarouselBar from '../../components/old/CarouselBar.vue'
 
   export default {
     name: 'App',

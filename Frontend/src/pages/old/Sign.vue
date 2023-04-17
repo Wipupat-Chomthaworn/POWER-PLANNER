@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import userdata from "../data/user.json";
+import userdata from "../../data/user.json";
 export default {
   name: 'Sign',
   components: {
