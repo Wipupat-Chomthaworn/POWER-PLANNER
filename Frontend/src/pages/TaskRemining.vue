@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import SideBar from '../components/SideBar.vue'
-import axios from 'axios'
+import SideBar from '../components/SideBar.vue';
+import axios from 'axios';
 export default {
   components: { SideBar },
   data() {

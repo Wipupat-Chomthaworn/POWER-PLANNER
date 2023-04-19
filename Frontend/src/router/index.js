@@ -5,7 +5,9 @@ import Notfound from "../pages/404.vue";
 import Profile from "../pages/Profile.vue";
 import Home from "../pages/Home.vue";
 import Start from "../pages/FirstPage.vue";
+import NewTask from "../pages/NewTask.vue";
 import Remaining from "../pages/TaskRemining.vue";
+
 
 
 
@@ -21,6 +23,10 @@ const routes = [
   {
     path: "/:pathMatch(.*)*",
     component: Notfound,
+  },
+  {
+    path: "/new",
+    component: NewTask,
   },
   {
     path: "/remaining",

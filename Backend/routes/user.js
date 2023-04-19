@@ -6,6 +6,7 @@ router = express.Router();
 
 // Require multer for file upload
 const multer = require("multer");
+const { group } = require("console");
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -21,13 +22,16 @@ var storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Create new user
-router.post("/sign", async function (req, res, next) {
+router.post("/signup", async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
   // const file = req.file;
   // const comment = req.body.comment;
   console.log("data : ", req.body);
+  // console.log("username : ", req.body.first_name);
+  // console.log("email : ", req.body.email);
+
 
   try {
     let results_pref = await conn.query(
@@ -39,7 +43,7 @@ router.post("/sign", async function (req, res, next) {
       "INSERT INTO user_info (user_id, email, username, password, first_name, last_name, phone, user_type, pref_id) VALUES (NULL, ?, ?, ?, ?, ?, ?,'n',?);",
       [
         req.body.email,
-        req.body.username,
+        req.body.first_name,
         req.body.password,
         req.body.first_name,
         req.body.last_name,
@@ -56,17 +60,19 @@ router.post("/sign", async function (req, res, next) {
     // }
     await conn.commit();
     console.log("success : ", results);
+    res.send(200);
     // res.redirect("http://localhost:3000/blogs/" + req.params.blogId);
   } catch (err) {
     await conn.rollback();
+    await conn.query("ALTER TABLE user_info AUTO_INCREMENT = 1;");
+
     next(err);
     console.log("error : ", err);
-    // console.log('data : ', req.body)
+    // res.send(err.message);
+    res.status(err.code)
   } finally {
     // res.status(200);
-    res.send("sign up sucessfully");
     console.log("finally");
-
     conn.release();
   }
 });
@@ -96,6 +102,94 @@ router.post("/log", async function (req, res, next) {
     // console.log("dataFromDB", results);
   }
 });
+// ---------------------------add group
+let usernameTest = "Owena"
+router.post("/api/addTaskGroups", async function (req, res, next) {
+  const conn = await pool.getConnection();
+  // Begin transaction
+  await conn.beginTransaction();
+  // const file = req.file;
+  // const comment = req.body.comment;
+  console.log("data : ", req.body);
+  // console.log("username : ", req.body.first_name);
+  // console.log("email : ", req.body.email);
+  try {
+    let results_userID = await conn.query(
+      "SELECT user_id FROM User_info WHERE username=?",[
+        // req.body.username
+        usernameTest
+      ]
+    );
+    console.log('user_id', results_userID);
+    results_userID = results_userID[0][0].user_id;
+    // var username = results_userID[0].insertId;
+    console.log("userid----------------", results_userID);
+    let results = await conn.query(
+      "INSERT INTO task_group (group_id, group_name, group_color, user_id) VALUES (NULL, ?, ?, ?);",
+      [
+        req.body.group_name,
+        req.body.group_color,
+        results_userID,
+      ]
+    );
+    await conn.commit();
+    console.log("success group added: ", results);
+    res.status(200);
+  } catch (err) {
+    await conn.rollback();
+    // await conn.query("ALTER TABLE task_group AUTO_INCREMENT = 1;");
+
+    next(err);
+    console.log("error : ", err);
+    // res.send(err.message);
+    res.status(err.code)
+  } finally {
+    // res.status(200);
+    console.log("finally group");
+    conn.release();
+  }
+});
+
+// ------------------get task_group data
+router.get("/api/TaskGroups", async function (req, res, next) {
+  const conn = await pool.getConnection();
+  // Begin transaction
+  await conn.beginTransaction();
+
+  try {
+    let results_userID = await conn.query(
+      "SELECT user_id FROM User_info WHERE username=?",[
+        // req.body.username
+        usernameTest
+      ]
+    );
+    let user_id = results_userID[0][0].user_id;
+    let results_task_group = await conn.query(
+      "SELECT * FROM task_group WHERE user_id=?",[
+        // req.body.username
+        user_id
+      ]
+      );
+      results_task_group = results_task_group[0]
+    console.log('user_id', results_task_group);
+    console.log("task_group---------------", results_task_group);
+    res.json(results_task_group);
+    await conn.commit();
+    console.log("success group added:");
+    res.status(200);
+  } catch (err) {
+    await conn.rollback();
+    next(err);
+    console.log("error : ", err);
+    // res.send(err.message);
+    res.status(err.code)
+  } finally {
+    // res.status(200);
+    console.log("finally group");
+    conn.release();
+  }
+});
+
 router.post("/blogs/addlike/:blogId", async function (req, res, next) {
   //ทำการ select ข้อมูล blog ที่มี id = req.params.blogId
   try {

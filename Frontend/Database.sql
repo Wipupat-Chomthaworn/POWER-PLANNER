@@ -15,7 +15,7 @@ CREATE TABLE `PREFER` (
 CREATE TABLE `USER_INFO` (
   `user_id` Integer(10) PRIMARY KEY AUTO_INCREMENT,
   `email` Varchar(30) UNIQUE NOT NULL,
-  `username` Varchar(30) NOT NULL,
+  `username` Varchar(30) NOT NULL UNIQUE,
   `password` Varchar(30) NOT NULL,
   `first_name` Varchar(30) NOT NULL,
   `last_name` Varchar(30) NOT NULL,
