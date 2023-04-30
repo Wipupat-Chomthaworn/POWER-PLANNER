@@ -48,8 +48,10 @@ CREATE TABLE `TASK` (
 
 CREATE TABLE `SUB_TASK` (
   `subtask_id` Integer(10) AUTO_INCREMENT,
-  `subtask_des` varchar(255) NOT NULL,
+  `subtask_desc` varchar(255) NOT NULL,
   `subtask_status` Enum("Done","Todo") NOT NULL DEFAULT "Todo",
+  `created_at` Date NOT NULL,
+  `updated_at` Date NOT NULL,
   `task_id` Integer(10) NOT NULL,
   PRIMARY KEY (`subtask_id`),
   FOREIGN KEY (task_id) REFERENCES TASK(task_id)

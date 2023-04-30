@@ -21,7 +21,7 @@ var storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// ---------------------------add group
+// ---------------------------add taskgroup
 let usernameTest = "Owena"
 router.post("/api/addTaskGroups", async function (req, res, next) {
   const conn = await pool.getConnection();
@@ -108,6 +108,91 @@ router.get("/api/TaskGroups", async function (req, res, next) {
     conn.release();
   }
 });
+
+// add task
+router.post("/api/Task", async function (req, res, next) {
+  const conn = await pool.getConnection();
+  // Begin transaction
+  await conn.beginTransaction();
+
+  try {
+    let results_userID = await conn.query(
+      "SELECT user_id FROM User_info WHERE username=?",[
+        // req.body.username
+        usernameTest
+      ]
+    );
+    let user_id = results_userID[0][0].user_id;
+    let insert_task = await conn.query(
+      "INSERT INTO task (task_id, task_name, task_desc, task_status, due_date, created_at, updated_at, group_id, notify_pref) VALUES (null, ?, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'no')",[
+        // req.body.username
+        req.body.task_name,
+        req.body.task_desc,
+        // req.body.due_date,
+        req.body.group_id,
+      ]
+      );
+    console.log('user_id', results_userID);
+    console.log('ins', insert_task);
+
+    // res.json(results_task_group);
+    await conn.commit();
+    console.log("success task added:");
+    res.status(200).json(insert_task);
+  } catch (err) {
+    await conn.rollback();
+    next(err);
+    console.log("error : ", err);
+    // res.send(err.message);
+    res.status(err.code)
+  } finally {
+    // res.status(200);
+    console.log("finally add task");
+    conn.release();
+  }
+});
+// -----------------------add subtask
+router.post("/api/SubTask", async function (req, res, next) {
+  const conn = await pool.getConnection();
+  // Begin transaction
+  await conn.beginTransaction();
+
+  try {
+    let results_userID = await conn.query(
+      "SELECT user_id FROM User_info WHERE username=?",[
+        // req.body.username
+        usernameTest
+      ]
+    );
+    let user_id = results_userID[0][0].user_id;
+    let insert_subtask = await conn.query(
+      "INSERT INTO sub_task (subtask_id, subtask_desc, subtask_status, created_at, updated_at, task_id) VALUES (null, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)",[
+        // req.body.username
+        req.body.subtask_desc,
+        // req.body.due_date,
+        req.body.task_id,
+      ]
+      );
+    console.log('user_id', results_userID);
+    console.log('ins', insert_subtask);
+
+    // res.json(results_task_group);
+    await conn.commit();
+    console.log("success subtask added:");
+    res.status(200).json(insert_subtask);
+  } catch (err) {
+    await conn.rollback();
+    next(err);
+    console.log("error : ", err);
+    // res.send(err.message);
+    res.status(err.code)
+  } finally {
+    // res.status(200);
+    console.log("finally add subtask");
+    conn.release();
+  }
+});
+
 
 router.post("/blogs/addlike/:blogId", async function (req, res, next) {
   //ทำการ select ข้อมูล blog ที่มี id = req.params.blogId

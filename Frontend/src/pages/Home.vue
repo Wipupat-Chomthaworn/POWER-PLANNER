@@ -28,9 +28,12 @@
          </div>
          <div class="grid grid-cols-2 gap-4 mb-4">
             <div id="pie" class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-               <p class="text-2xl text-gray-400 dark:text-gray-500">+
-                  
-               </p>
+               <!-- <p class="text-2xl text-gray-400 dark:text-gray-500">+
+                  piechart here
+                 
+
+               </p> -->
+               <pie-chart :data="chartData"></pie-chart>
             </div>
             <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
                <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
@@ -65,12 +68,39 @@
 <script>
 import Navbar from '../components/Navbar.vue';
 import SideBar from '../components/SideBar.vue';
+import PieChart from '../components/PieChart.vue';
+import axios from 'axios';
 
 export default {
    components: {
       Navbar,
-      SideBar
-
+      SideBar,
+      PieChart,
    },
+   data() {
+    return {
+      chartData: null
+    };
+  },
+  created() {
+    axios.get('/api/tasks')
+      .then(response => {
+        const tasks = response.data;
+        const done = tasks.filter(task => task.status === 'done').length;
+        const left = tasks.filter(task => task.status === 'left').length;
+        this.chartData = {
+          labels: ['Done', 'Left'],
+          datasets: [
+            {
+              data: [done, left],
+              backgroundColor: ['#36a2eb', '#ff6384']
+            }
+          ]
+        };
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
 };
 </script>
