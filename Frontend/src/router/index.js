@@ -7,6 +7,7 @@ import Home from "../pages/Home.vue";
 import Start from "../pages/FirstPage.vue";
 import NewTask from "../pages/NewTask.vue";
 import Remaining from "../pages/TaskRemining.vue";
+// import Log from "../pages/Login.vue";
 
 
 
@@ -20,6 +21,10 @@ const routes = [
     path: "/sign",
     component: Sign,
   },
+  // {
+  //   path: "/log",
+  //   component: log,
+  // },
   {
     path: "/:pathMatch(.*)*",
     component: Notfound,
