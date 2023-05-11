@@ -109,6 +109,47 @@ router.get("/api/TaskGroups", async function (req, res, next) {
   }
 });
 
+// ------------------get task_group data
+router.get("/api/TaskGroups/:group_id", async function (req, res, next) {
+  const conn = await pool.getConnection();
+  // Begin transaction
+  await conn.beginTransaction();
+
+  try {
+    let results_userID = await conn.query(
+      "SELECT user_id FROM User_info WHERE username=?",[
+        // req.body.username
+        usernameTest
+      ]
+    );
+    let user_id = results_userID[0][0].user_id;
+    let results_task_group = await conn.query(
+      "SELECT * FROM task_group WHERE group_id = ?",[
+        // req.body.username
+        req.params.group_id
+      ]
+      );
+      results_task_group = results_task_group[0]
+    console.log('user_id', results_task_group);
+    console.log("task_group---------------", results_task_group);
+    res.json(results_task_group);
+    await conn.commit();
+    console.log("success group added:");
+    res.status(200);
+  } catch (err) {
+    await conn.rollback();
+    next(err);
+    console.log("error : ", err);
+    // res.send(err.message);
+    res.status(err.code)
+  } finally {
+    // res.status(200);
+    console.log("finally group");
+    conn.release();
+  }
+});
+
+
 // add task
 router.post("/api/Task", async function (req, res, next) {
   const conn = await pool.getConnection();

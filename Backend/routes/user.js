@@ -77,28 +77,32 @@ router.post("/signup", async function (req, res, next) {
   }
 });
 
-router.post("/log", async function (req, res, next) {
+router.post("/api/login", async function (req, res, next) {
   const conn = await pool.getConnection();
   console.log("dataFromReq : ", req.body);
   let results = await conn.query(
-    "select * from user_info where username = ?;",
-    [req.body.username]
+    "select * from user_info where email = ?;",
+    [req.body.email]
   );
   // console.log("dataFromDB", results);
-  // console.log("ispasswordcorrect : ", (req.body.username = results[0].username && results[0].body.password == results[0].password))
+  // console.log("ispasswordcorrect : ", (req.body.email = results[0].email && results[0].body.password == results[0].password))
   if (
-    (req.body.username == results[0][0].username ||
-      req.body.username == results[0][0].email) &&
+    (
+      // req.body.username == results[0][0].username ||
+      req.body.email == results[0][0].email) &&
     req.body.password == results[0][0].password
   ) {
     // success code
-
-    console.log("success : ", results);
+    console.log("success : ", results[0]);
 
     // res.redirect("http://localhost:5173/remaining");
-    res.send("Log In sucessfully");
+    res.status(200).json("Log In sucessfully");
+
+    // res.send();
   } else {
-    res.send("username or password is incorrect");
+    res.status(201).json("username or password is incorrect");
+    console.log("login invalid : ", results[0]);
+
     // console.log("dataFromDB", results);
   }
 });

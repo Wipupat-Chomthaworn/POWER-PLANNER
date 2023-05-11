@@ -16,11 +16,13 @@
             </svg>
           </button>
           <a href="/home" class="flex ml-2 md:mr-24">
-            <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 mr-3" alt="FlowBite Logo" />
+            <!-- <img src="../assets/logo.jpg" class="h-8 mr-3" alt="Power Planner Logo" /> -->
+            <img src="../assets/logo2d2.png" class="h-8 mr-3" alt="Power Planner Logo" />
+
             <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Power Planner</span>
           </a>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" v-if="false">
           <div class="flex items-center ml-3">
             <div>
               <button type="button"
@@ -69,3 +71,5 @@
   </div>
 </nav>
 </template>
+<script>
+</script>

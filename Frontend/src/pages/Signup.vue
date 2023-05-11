@@ -146,8 +146,8 @@ export default {
                   Swal.fire({
                       icon: 'error',
                       title: 'Oops...',
-                      text: `${error.response.data}`,
-                      footer: 'this email is used already'
+                    //   text: `${error.response.data}`,
+                      footer: 'this email or username is used already'
                   })
               }
           }
