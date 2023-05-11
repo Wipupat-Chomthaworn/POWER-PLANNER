@@ -40,17 +40,18 @@
  
  <script>
  import Chart from 'chart.js';
+ import axios from 'axios';
  
  export default {
    data() {
      return {
        chart: null,
        chartData: {
-         labels: ['Done', 'Todo'],
+         labels: ['Todo','Doing', 'Done'],
          datasets: [
            {
-             backgroundColor: ['#36A2EB', '#FF6384'],
-             data: [10, 5]
+             backgroundColor: ['#FF6384', '#36A2EB',  '#936584'],
+             data: [10, 5, 6]
            }
          ]
        }
@@ -64,10 +65,12 @@
      });
  
      // Fetch actual data from backend and update chart
-     axios.get('/api/tasks').then(response => {
-       const doneCount = response.data.filter(task => task.status === 'done').length;
-       const leftCount = response.data.filter(task => task.status === 'left').length;
-       this.chartData.datasets[0].data = [doneCount, leftCount];
+     axios.get('http://localhost:3000/api/GetTasks').then(response => {
+      console.log("Pie res", response.data)
+       const doneCount = response.data.filter(task => task.task_status === 'Done').length;
+       const todoCount = response.data.filter(task => task.task_status === 'Todo').length;
+       const doingCount = response.data.filter(task => task.task_status === 'Doing').length;
+       this.chartData.datasets[0].data = [todoCount, doingCount, doneCount];
        this.chart.update();
      });
    }

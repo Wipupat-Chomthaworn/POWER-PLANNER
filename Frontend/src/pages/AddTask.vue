@@ -101,7 +101,7 @@ export default {
     const groupId = this.$route.params.groupId;
 
     // make a GET request to the backend to get the group data
-    axios.get(`http://localhost:3000/api/groups/${groupId}`).then(response => {
+    axios.get(`http://localhost:3000/api/TaskGroups/${groupId}`).then(response => {
       this.group = response.data;
     });
 

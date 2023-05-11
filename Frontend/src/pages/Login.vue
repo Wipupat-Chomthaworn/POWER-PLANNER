@@ -62,6 +62,7 @@ export default {
         localStorage.setItem('token', response.data.user)
         console.log(response.data);
         this.$store.dispatch('setUser', response.data.user);
+        // this.showSuccessAlert();
         this.$router.push('/home');
       } catch (error) {
         this.error = error.response.data.message;
