@@ -41,6 +41,7 @@
 </template>
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'Login',
@@ -59,6 +60,7 @@ export default {
           password: this.password
         });
         localStorage.setItem('token', response.data.user)
+        console.log(response.data);
         this.$store.dispatch('setUser', response.data.user);
         this.$router.push('/home');
       } catch (error) {

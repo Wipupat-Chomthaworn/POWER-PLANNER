@@ -85,6 +85,7 @@ import SideBar from '../components/SideBar.vue';
 import PieChart from '../components/PieChart.vue';
 import axios from 'axios';
 
+
 export default {
    components: {
       Navbar,
@@ -97,7 +98,7 @@ export default {
     };
   },
   created() {
-    axios.get('/api/tasks')
+    axios.get('http://localhost:3000/api/GetTasks')
       .then(response => {
         const tasks = response.data;
         const done = tasks.filter(task => task.status === 'done').length;

@@ -151,7 +151,7 @@ router.get("/api/TaskGroups/:group_id", async function (req, res, next) {
 
 
 // add task
-router.post("/api/Task", async function (req, res, next) {
+router.post("/api/Tasks", async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
@@ -180,6 +180,47 @@ router.post("/api/Task", async function (req, res, next) {
     await conn.commit();
     console.log("success task added:");
     res.status(200).json(insert_task);
+  } catch (err) {
+    await conn.rollback();
+    next(err);
+    console.log("error : ", err);
+    // res.send(err.message);
+    res.status(err.code)
+  } finally {
+    // res.status(200);
+    console.log("finally add task");
+    conn.release();
+  }
+});
+// Get tasks
+router.get("/api/GetTasks", async function (req, res, next) {
+  const conn = await pool.getConnection();
+  // Begin transaction
+  await conn.beginTransaction();
+
+  try {
+    let results_userID = await conn.query(
+      "SELECT user_id FROM User_info WHERE username=?",[
+        // req.body.username
+        usernameTest
+      ]
+    );
+    console.log("result_userId", results_userID);
+    let user_id = results_userID[0][0].user_id;
+    let results_task = await conn.query(
+      "Select * from task JOIN task_group using(group_id) where user_id=?",[
+        // req.body.username
+        user_id,
+        
+      ]
+      );
+      results_task = results_task[0];
+    console.log('result_task', results_task);
+
+    // res.json(results_task_group);
+    await conn.commit();
+    console.log("success task Getted:");
+    res.status(200).json(results_task);
   } catch (err) {
     await conn.rollback();
     next(err);
