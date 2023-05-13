@@ -33,14 +33,14 @@ router.post("/api/addTaskGroups", async function (req, res, next) {
   // console.log("username : ", req.body.first_name);
   // console.log("email : ", req.body.email);
   try {
-    let results_userID = await conn.query(
+    let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
         usernameTest
       ]
     );
     console.log('user_id', results_userID);
-    results_userID = results_userID[0][0].user_id;
+    results_userID = results_userID[0].user_id;
     // var username = results_userID[0].insertId;
     console.log("userid----------------", results_userID);
     let results = await conn.query(
@@ -52,7 +52,7 @@ router.post("/api/addTaskGroups", async function (req, res, next) {
       ]
     );
     await conn.commit();
-    console.log("success group added: ", results);
+    console.log("success group added: ", results + new Date());
     res.status(200);
   } catch (err) {
     await conn.rollback();
@@ -76,13 +76,13 @@ router.get("/api/TaskGroups", async function (req, res, next) {
   await conn.beginTransaction();
 
   try {
-    let results_userID = await conn.query(
+    let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
         usernameTest
       ]
     );
-    let user_id = results_userID[0][0].user_id;
+    let user_id = results_userID[0].user_id;
     let results_task_group = await conn.query(
       "SELECT * FROM task_group WHERE user_id=?",[
         // req.body.username
@@ -94,7 +94,7 @@ router.get("/api/TaskGroups", async function (req, res, next) {
     console.log("task_group---------------", results_task_group);
     res.json(results_task_group);
     await conn.commit();
-    console.log("success group added:");
+    console.log("success group added", new Date());
     res.status(200);
   } catch (err) {
     await conn.rollback();
@@ -116,13 +116,13 @@ router.get("/api/TaskGroups/:group_id", async function (req, res, next) {
   await conn.beginTransaction();
 
   try {
-    let results_userID = await conn.query(
+    let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
         usernameTest
       ]
     );
-    let user_id = results_userID[0][0].user_id;
+    let user_id = results_userID[0].user_id;
     let results_task_group = await conn.query(
       "SELECT * FROM task_group WHERE group_id = ?",[
         // req.body.username
@@ -134,7 +134,7 @@ router.get("/api/TaskGroups/:group_id", async function (req, res, next) {
     console.log("task_group---------------", results_task_group);
     res.json(results_task_group);
     await conn.commit();
-    console.log("success group added:");
+    console.log("success group added", new Date());
     res.status(200);
   } catch (err) {
     await conn.rollback();
@@ -157,13 +157,13 @@ router.post("/api/Tasks", async function (req, res, next) {
   await conn.beginTransaction();
 
   try {
-    let results_userID = await conn.query(
+    let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
         usernameTest
       ]
     );
-    let user_id = results_userID[0][0].user_id;
+    let user_id = results_userID[0].user_id;
     let insert_task = await conn.query(
       "INSERT INTO task (task_id, task_name, task_desc, task_status, due_date, created_at, updated_at, group_id, notify_pref) VALUES (null, ?, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'no')",[
         // req.body.username
@@ -178,7 +178,7 @@ router.post("/api/Tasks", async function (req, res, next) {
 
     // res.json(results_task_group);
     await conn.commit();
-    console.log("success task added:");
+    console.log("success task added", new Date());
     res.status(200).json(insert_task);
   } catch (err) {
     await conn.rollback();
@@ -199,14 +199,14 @@ router.get("/api/GetTasks", async function (req, res, next) {
   await conn.beginTransaction();
 
   try {
-    let results_userID = await conn.query(
+    let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
         usernameTest
       ]
     );
     console.log("result_userId", results_userID);
-    let user_id = results_userID[0][0].user_id;
+    let user_id = results_userID[0].user_id;
     let results_task = await conn.query(
       "Select * from task JOIN task_group using(group_id) where user_id=?",[
         // req.body.username
@@ -219,7 +219,7 @@ router.get("/api/GetTasks", async function (req, res, next) {
 
     // res.json(results_task_group);
     await conn.commit();
-    console.log("success task Getted:");
+    console.log("success task Getted", new Date());
     res.status(200).json(results_task);
   } catch (err) {
     await conn.rollback();
@@ -229,7 +229,6 @@ router.get("/api/GetTasks", async function (req, res, next) {
     res.status(err.code)
   } finally {
     // res.status(200);
-    console.log("finally add task");
     conn.release();
   }
 });
@@ -240,13 +239,13 @@ router.post("/api/SubTask", async function (req, res, next) {
   await conn.beginTransaction();
 
   try {
-    let results_userID = await conn.query(
+    let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
         usernameTest
       ]
     );
-    let user_id = results_userID[0][0].user_id;
+    let user_id = results_userID[0].user_id;
     let insert_subtask = await conn.query(
       "INSERT INTO sub_task (subtask_id, subtask_desc, subtask_status, created_at, updated_at, task_id) VALUES (null, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)",[
         // req.body.username
@@ -260,7 +259,7 @@ router.post("/api/SubTask", async function (req, res, next) {
 
     // res.json(results_task_group);
     await conn.commit();
-    console.log("success subtask added:");
+    console.log("success subtask added", new Date());
     res.status(200).json(insert_subtask);
   } catch (err) {
     await conn.rollback();
