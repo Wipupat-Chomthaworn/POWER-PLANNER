@@ -97,11 +97,11 @@ router.post("/api/login", async function (req, res, next) {
     console.log("success : ", results[0]);
 
     // res.redirect("http://localhost:5173/remaining");
-    res.status(200).json("Log In sucessfully");
+    res.status(200).send("Log In sucessfully");
 
     // res.send();
   } else {
-    res.status(201).json("username or password is incorrect");
+    res.status(404).send("username or password is incorrect");
     console.log("login invalid : ", results[0]);
 
     // console.log("dataFromDB", results);

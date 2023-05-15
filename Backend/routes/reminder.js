@@ -43,7 +43,7 @@ router.post("/api/addTaskGroups", async function (req, res, next) {
     results_userID = results_userID[0].user_id;
     // var username = results_userID[0].insertId;
     console.log("userid----------------", results_userID);
-    let results = await conn.query(
+    let [results] = await conn.query(
       "INSERT INTO task_group (group_id, group_name, group_color, user_id) VALUES (NULL, ?, ?, ?);",
       [
         req.body.group_name,

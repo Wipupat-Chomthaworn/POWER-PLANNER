@@ -11,9 +11,6 @@
 // import Remaining from "../pages/TaskRemining.vue";
 // // import Log from "../pages/Login.vue";
 
-
-
-
 // const routes = [
 //   {
 //     path: "/",
@@ -74,6 +71,8 @@ import Start from "../pages/FirstPage.vue";
 import AddTask from "../pages/AddTask.vue";
 import NewGroup from "../pages/NewGroup.vue";
 import Remaining from "../pages/TaskRemining.vue";
+import Kanban from "../pages/Kanban.vue";
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -92,15 +91,23 @@ const router = createRouter({
     },
     {
       path: "/new",
+      meta: { login: true },
       component: NewGroup,
     },
     {
       path: "/newtask/:group_id",
+      meta: { login: true },
       component: AddTask,
     },
     {
       path: "/remaining",
+      meta: { login: true },
       component: Remaining,
+    },
+    {
+      path: "/kanban",
+      meta: { login: true },
+      component: Kanban,
     },
     {
       path: "/home",
