@@ -1,13 +1,15 @@
 const express = require("express");
 const path = require("path");
 const pool = require("../config");
-// const { isLoggedIn } = require('../middlewares');
+const bcrypt = require('bcrypt');
+const { generateToken } = require("../utils/token")// import for gen token
+const { isLoggedIn } = require('../middlewares/index');//middleware to check is user log in?
 
 router = express.Router();
 
 // Require multer for file upload
 const multer = require("multer");
-const { group } = require("console");
+const { group, log } = require("console");
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -39,13 +41,14 @@ router.post("/signup", async function (req, res, next) {
       "INSERT INTO prefer (pref_id, theme, text_size) VALUES (NULL,'light','2');"
     );
     var pref_id = results_pref[0].insertId;
+    const enpassword = await bcrypt.hash(req.body.password, 5);
     console.log("Pref----------------", pref_id);
     let results = await conn.query(
       "INSERT INTO user_info (user_id, email, username, password, first_name, last_name, phone, user_type, pref_id) VALUES (NULL, ?, ?, ?, ?, ?, ?,'n',?);",
       [
         req.body.email,
         req.body.first_name,
-        req.body.password,
+        enpassword,
         req.body.first_name,
         req.body.last_name,
         req.body.phone,
@@ -80,120 +83,191 @@ router.post("/signup", async function (req, res, next) {
 
 router.post("/api/login", async function (req, res, next) {
   const conn = await pool.getConnection();
+  conn.beginTransaction();
   console.log("dataFromReq : ", req.body);
-  let results = await conn.query(
-    "select * from user_info where email = ?;",
-    [req.body.email]
-  );
-  // console.log("dataFromDB", results);
-  // console.log("ispasswordcorrect : ", (req.body.email = results[0].email && results[0].body.password == results[0].password))
-  if (
-    (
-      // req.body.username == results[0][0].username ||
-      req.body.email == results[0][0].email) &&
-    req.body.password == results[0][0].password
-  ) {
-    // success code
-    console.log("success : ", results[0]);
 
-    // res.redirect("http://localhost:5173/remaining");
-    res.status(200).send("Log In sucessfully");
+  let email= req.body.email;
+  let password= req.body.password;
+  try {
+    // Check if email is correct
+    const [users] = await conn.query(
+        'SELECT * FROM `user_info` WHERE email=?',
+        [email]
+    )
+    const user = users[0]
+    console.log("user", user.email, user.password)
+    if (!user) {
+        throw new Error('Incorrect username or password')
+    }
+    // Check if password is correct
+    if (!(await bcrypt.compare(password, user.password))) {
+        throw new Error('Incorrect username or password')
+    }
 
-    // res.send();
-  } else {
-    res.status(404).send("username or password is incorrect");
-    console.log("login invalid : ", results[0]);
+    // Check if token already existed
+    const [tokens] = await conn.query(
+        'SELECT * FROM tokens WHERE user_id=?',[user.user_id]
+    )
+    let token = tokens[0]?.token
+    // next part is to check if NO token
+    if (!token) {
+        // Generate and save token into database
+        token = generateToken() //call function from token.js
+        console.log("UserId:", user.user_id,)
+        console.log("token:", token)
 
-    // console.log("dataFromDB", results);
-  }
+        await conn.query(
+            'INSERT INTO tokens (token, user_id, create_date) VALUES (?, ?, CURRENT_TIMESTAMP)',[token, user.user_id]
+        )
+        await conn.commit()
+    }
+    //res token so user can access and assign to their browser
+    res.status(200).send({
+      "token": token
+    })
+  }catch (err) {
+      console.log(err);
+      await conn.rollback();
+      await conn.query("ALTER TABLE TOKENS AUTO_INCREMENT = 1;");
+      console.log("err")
+      res.status(404).send("Invalid username or password")
+
+
+    }finally {
+      conn.release();
+      console.log("Token Finally")
+    }
+  // let [results] = await conn.query(
+  //   "select * from user_info where email = ?;",
+  //   [req.body.email]
+  // );
+  // let email = req.body.email;
+  // let password = req.body.password;
+  
+  // // console.log("dataFromDB", results);
+  // // console.log("ispasswordcorrect : ", (req.body.email = results[0].email && results[0].body.password == results[0].password))
+  // if (
+  //   (
+  //     // req.body.username == results[0][0].username ||
+  //     email == results[0].email) &&
+  //   password == results[0].password
+  // ) {
+  //   // Check if password is correct
+  //   if (!(await bcrypt.compare(password, user.password))) {
+  //     throw new Error('Incorrect username or password')
+  // }
+
+  // // Check if token already existed
+  // const [tokens] = await conn.query(
+  //     'SELECT * FROM tokens WHERE user_id=?',
+  //     [user.user_id]
+  // )
+  // let token = tokens[0]?.token
+  // if (!token) {
+  //     // Generate and save token into database
+  //     token = generateToken()
+  //     await conn.query(
+  //         'INSERT INTO tokens(user_id, token) VALUES (?, ?)',
+  //         [user.user_id, token]
+  //     )
+  // }
+
+
+  // } else {
+  //   res.status(404).send("username or password is incorrect");
+  //   console.log("login invalid : ", results[0]);
+
+  //   // console.log("dataFromDB", results);
+  // }
 });
 // ---------------------------add group
-let usernameTest = "Owena"
-router.post("/api/addTaskGroups", async function (req, res, next) {
-  const conn = await pool.getConnection();
-  // Begin transaction
-  await conn.beginTransaction();
-  // const file = req.file;
-  // const comment = req.body.comment;
-  console.log("data : ", req.body);
-  // console.log("username : ", req.body.first_name);
-  // console.log("email : ", req.body.email);
-  try {
-    let results_userID = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
-        // req.body.username
-        usernameTest
-      ]
-    );
-    console.log('user_id', results_userID);
-    results_userID = results_userID[0][0].user_id;
-    // var username = results_userID[0].insertId;
-    console.log("userid----------------", results_userID);
-    let results = await conn.query(
-      "INSERT INTO task_group (group_id, group_name, group_color, user_id) VALUES (NULL, ?, ?, ?);",
-      [
-        req.body.group_name,
-        req.body.group_color,
-        results_userID,
-      ]
-    );
-    await conn.commit();
-    console.log("success group added: ", results);
-    res.status(200);
-  } catch (err) {
-    await conn.rollback();
-    // await conn.query("ALTER TABLE task_group AUTO_INCREMENT = 1;");
 
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code)
-  } finally {
-    // res.status(200);
-    console.log("finally group");
-    conn.release();
-  }
-});
+// let usernameTest = "Owena"
+// router.post("/api/addTaskGroups", async function (req, res, next) {
+//   const conn = await pool.getConnection();
+//   // Begin transaction
+//   await conn.beginTransaction();
+//   // const file = req.file;
+//   // const comment = req.body.comment;
+//   console.log("data : ", req.body);
+//   // console.log("username : ", req.body.first_name);
+//   // console.log("email : ", req.body.email);
+//   try {
+//     let results_userID = await conn.query(
+//       "SELECT user_id FROM User_info WHERE username=?",[
+//         // req.body.username
+//         usernameTest
+//       ]
+//     );
+//     console.log('user_id', results_userID);
+//     results_userID = results_userID[0][0].user_id;
+//     // var username = results_userID[0].insertId;
+//     console.log("userid----------------", results_userID);
+//     let results = await conn.query(
+//       "INSERT INTO task_group (group_id, group_name, group_color, user_id) VALUES (NULL, ?, ?, ?);",
+//       [
+//         req.body.group_name,
+//         req.body.group_color,
+//         results_userID,
+//       ]
+//     );
+//     await conn.commit();
+//     console.log("success group added: ", results);
+//     res.status(200);
+//   } catch (err) {
+//     await conn.rollback();
+//     await conn.query("ALTER TABLE task_group AUTO_INCREMENT = 1;");
 
-// ------------------get task_group data
-router.get("/api/TaskGroups", async function (req, res, next) {
-  const conn = await pool.getConnection();
-  // Begin transaction
-  await conn.beginTransaction();
+//     next(err);
+//     console.log("error : ", err);
+//     // res.send(err.message);
+//     res.status(err.code)
+//   } finally {
+//     // res.status(200);
+//     console.log("finally group");
+//     conn.release();
+//   }
+// });
 
-  try {
-    let results_userID = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
-        // req.body.username
-        usernameTest
-      ]
-    );
-    let user_id = results_userID[0][0].user_id;
-    let results_task_group = await conn.query(
-      "SELECT * FROM task_group WHERE user_id=?",[
-        // req.body.username
-        user_id
-      ]
-      );
-      results_task_group = results_task_group[0]
-    console.log('user_id', results_task_group);
-    console.log("task_group---------------", results_task_group);
-    res.json(results_task_group);
-    await conn.commit();
-    console.log("success group added:");
-    res.status(200);
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code)
-  } finally {
-    // res.status(200);
-    console.log("finally group");
-    conn.release();
-  }
-});
+// // ------------------get task_group data
+// router.get("/api/TaskGroups", async function (req, res, next) {
+//   const conn = await pool.getConnection();
+//   // Begin transaction
+//   await conn.beginTransaction();
+
+//   try {
+//     let results_userID = await conn.query(
+//       "SELECT user_id FROM User_info WHERE username=?",[
+//         // req.body.username
+//         usernameTest
+//       ]
+//     );
+//     let user_id = results_userID[0][0].user_id;
+//     let results_task_group = await conn.query(
+//       "SELECT * FROM task_group WHERE user_id=?",[
+//         // req.body.username
+//         user_id
+//       ]
+//       );
+//       results_task_group = results_task_group[0]
+//     console.log('user_id', results_task_group);
+//     console.log("task_group---------------", results_task_group);
+//     res.json(results_task_group);
+//     await conn.commit();
+//     console.log("success group added:");
+//     res.status(200);
+//   } catch (err) {
+//     await conn.rollback();
+//     next(err);
+//     console.log("error : ", err);
+//     // res.send(err.message);
+//     res.status(err.code)
+//   } finally {
+//     // res.status(200);
+//     console.log("finally group");
+//     conn.release();
+//   }
+// });
 
 router.post("/blogs/addlike/:blogId", async function (req, res, next) {
   //ทำการ select ข้อมูล blog ที่มี id = req.params.blogId

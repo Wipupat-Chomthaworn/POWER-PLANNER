@@ -29,8 +29,8 @@
          <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
             <p class="text-2xl text-gray-400 dark:text-gray-500">
                u have  
-               <!-- {{ task.length }} -->
-               10 
+               {{ tasks.length }}
+               <!-- 10  -->
                task left
             </p>
          </div>
@@ -94,6 +94,7 @@ export default {
    },
    data() {
     return {
+      tasks: [],
       chartData: null
     };
   },
@@ -101,6 +102,7 @@ export default {
     axios.get('http://localhost:3000/api/GetTasks')
       .then(response => {
         const tasks = response.data;
+        this.tasks = response.data;
         const done = tasks.filter(task => task.status === 'done').length;
         const left = tasks.filter(task => task.status === 'left').length;
         this.chartData = {

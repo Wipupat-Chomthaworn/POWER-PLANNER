@@ -17,7 +17,7 @@ CREATE TABLE `USER_INFO` (
   `user_id` Integer(10) PRIMARY KEY AUTO_INCREMENT,
   `email` Varchar(30) UNIQUE NOT NULL,
   `username` Varchar(30) NOT NULL UNIQUE,
-  `password` Varchar(30) NOT NULL,
+  `password` Varchar(255) NOT NULL,
   `first_name` Varchar(30) NOT NULL,
   `last_name` Varchar(30) NOT NULL,
   `phone` Varchar(10) NOT NULL,
@@ -26,14 +26,16 @@ CREATE TABLE `USER_INFO` (
   FOREIGN KEY (pref_id) REFERENCES PREFER(pref_id)
 );
 
-CREATE TABLE `TOKENS` (
+CREATE TABLE `tokens` (
   `token_id` int(10) NOT NULL AUTO_INCREMENT,
   `token` varchar(255) NOT NULL,
   `user_id` int(10) NOT NULL,
+  `create_date` date DEFAULT NULL,
   PRIMARY KEY (`token_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+);
+
 
 
 CREATE TABLE `TASK_GROUP` (

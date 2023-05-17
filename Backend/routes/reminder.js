@@ -207,14 +207,14 @@ router.get("/api/GetTasks", async function (req, res, next) {
     );
     console.log("result_userId", results_userID);
     let user_id = results_userID[0].user_id;
-    let results_task = await conn.query(
-      "Select * from task JOIN task_group using(group_id) where user_id=?",[
+    let [results_task] = await conn.query(
+      "Select * from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",[
         // req.body.username
         user_id,
         
       ]
       );
-      results_task = results_task[0];
+      // results_task = results_task[0];
     console.log('result_task', results_task);
 
     // res.json(results_task_group);
