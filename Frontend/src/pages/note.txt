@@ -1,0 +1,1 @@
+admin page can delete every user but cant delete them self

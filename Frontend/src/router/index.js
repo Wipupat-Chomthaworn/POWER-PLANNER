@@ -74,6 +74,10 @@ import Remaining from "../pages/TaskRemining.vue";
 import Kanban from "../pages/Kanban.vue";
 
 
+import ViewUser from "../pages/ViewUser.vue";
+
+
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -109,6 +113,13 @@ const router = createRouter({
       meta: { login: true },
       component: Kanban,
     },
+
+    {
+      path: "/Viewusers",
+      meta: { login: true },
+      component: ViewUser,
+    },
+
     {
       path: "/home",
       name: "home",

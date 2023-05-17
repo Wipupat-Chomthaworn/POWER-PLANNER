@@ -44,7 +44,7 @@ router.post("/signup", async function (req, res, next) {
     const enpassword = await bcrypt.hash(req.body.password, 5);
     console.log("Pref----------------", pref_id);
     let results = await conn.query(
-      "INSERT INTO user_info (user_id, email, username, password, first_name, last_name, phone, user_type, pref_id) VALUES (NULL, ?, ?, ?, ?, ?, ?,'n',?);",
+      "INSERT INTO user_info (user_id, email, username, password, first_name, last_name, phone, user_type, pref_id) VALUES (NULL, ?, ?, ?, ?, ?, ?, 'customer',?);",
       [
         req.body.email,
         req.body.first_name,
@@ -179,6 +179,18 @@ router.post("/api/login", async function (req, res, next) {
 
   //   // console.log("dataFromDB", results);
   // }
+});
+router.get("/api/viewUser",isLoggedIn, async function (req, res) {
+  // Your code here
+  let [allUsers] = await pool.query("SELECT * FROM `user_info`")
+  return res.status(200).send({
+    "allUsers":allUsers, //sent all users data from database
+    "whoAreU": req.user.user_id //sent who user is logged and who is logged in CANT delete itself
+  });
+});
+router.delete("/api/delUser/:userId", function (req, res) {
+  // Your code here
+  return;
 });
 // ---------------------------add group
 

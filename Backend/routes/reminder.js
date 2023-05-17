@@ -161,11 +161,11 @@ router.get("/api/TaskGroups/:group_id",isLoggedIn, async function (req, res, nex
 
 
 // add task
-router.post("/api/Tasks", async function (req, res, next) {
+router.post("/api/Tasks",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
-
+  let userId = req.user.user_id;
   try {
     let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
@@ -203,25 +203,25 @@ router.post("/api/Tasks", async function (req, res, next) {
   }
 });
 // Get tasks
-router.get("/api/GetTasks", async function (req, res, next) {
+router.get("/api/GetTasks",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
+  let userId = req.user.user_id;
 
   try {
-    let [results_userID] = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
-        // req.body.username
-        userId
-      ]
-    );
-    console.log("result_userId", results_userID);
-    let user_id = results_userID[0].user_id;
+    // let [results_userID] = await conn.query(
+    //   "SELECT user_id FROM User_info WHERE username=?",[
+    //     // req.body.username
+    //     userId
+    //   ]
+    // );
+    // console.log("result_userId", results_userID);
+    // let user_id = results_userID[0].user_id;
     let [results_task] = await conn.query(
       "Select * from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",[
         // req.body.username
-        user_id,
-        
+        userId,
       ]
       );
       // results_task = results_task[0];
@@ -283,7 +283,7 @@ router.post("/api/SubTask", async function (req, res, next) {
     conn.release();
   }
 });
-
+// admin
 
 router.post("/blogs/addlike/:blogId", async function (req, res, next) {
   //ทำการ select ข้อมูล blog ที่มี id = req.params.blogId

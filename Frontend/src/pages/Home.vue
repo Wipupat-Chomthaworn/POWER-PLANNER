@@ -83,7 +83,9 @@
 import Navbar from '../components/Navbar.vue';
 import SideBar from '../components/SideBar.vue';
 import PieChart from '../components/PieChart.vue';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from '../plugins/axios';
+
 
 
 export default {
@@ -99,7 +101,7 @@ export default {
     };
   },
   created() {
-    axios.get('http://localhost:3000/api/GetTasks')
+    axios.get('/api/GetTasks')
       .then(response => {
         const tasks = response.data;
         this.tasks = response.data;
@@ -116,6 +118,7 @@ export default {
         };
       })
       .catch(error => {
+         console.log("home", error.message)
         console.error(error);
       });
   }

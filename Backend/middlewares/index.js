@@ -8,14 +8,15 @@ const pool = require("../config");
 
 async function isLoggedIn(req, res, next) {
     let authorization = req.headers.authorization
-    console.log("isLoggedIn", authorization)
 
     if (!authorization) {
+        console.log("!auth You are not logged in")
         return res.status(401).send('You are not logged in')
     }
 
     let [part1, part2] = authorization.split(' ')
     if (part1 !== 'Bearer' || !part2) {
+        console.log("!Barer You are not logged in")
         return res.status(401).send('You are not logged in')
     }
 
@@ -23,6 +24,7 @@ async function isLoggedIn(req, res, next) {
     const [tokens] = await pool.query('SELECT * FROM tokens WHERE token = ?', [part2])
     const token = tokens[0]
     if (!token) {
+        console.log("!token You are not logged in")
         return res.status(401).send('You are not logged in')
     }
 
@@ -31,6 +33,7 @@ async function isLoggedIn(req, res, next) {
         'SELECT * ' +
         'FROM `user_info` WHERE user_id = ?', [token.user_id]
     )
+    console.log("isLoggedIn", authorization, new Date())
     req.user = users[0]
 
     next()

@@ -40,7 +40,9 @@
  
  <script>
  import Chart from 'chart.js';
- import axios from 'axios';
+//  import axios from 'axios';
+import axios from '../plugins/axios';
+
  
  export default {
    data() {
@@ -65,7 +67,7 @@
      });
  
      // Fetch actual data from backend and update chart
-     axios.get('http://localhost:3000/api/GetTasks').then(response => {
+     axios.get('/api/GetTasks').then(response => {
       console.log("Pie res", response.data)
        const doneCount = response.data.filter(task => task.task_status === 'Done').length;
        const todoCount = response.data.filter(task => task.task_status === 'Todo').length;
