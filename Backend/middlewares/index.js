@@ -8,6 +8,7 @@ const pool = require("../config");
 
 async function isLoggedIn(req, res, next) {
     let authorization = req.headers.authorization
+    console.log("isLoggedIn", authorization)
 
     if (!authorization) {
         return res.status(401).send('You are not logged in')
@@ -28,7 +29,7 @@ async function isLoggedIn(req, res, next) {
     // Set user
     const [users] = await pool.query(
         'SELECT * ' +
-        'FROM `user_info` WHERE id = ?', [token.user_id]
+        'FROM `user_info` WHERE user_id = ?', [token.user_id]
     )
     req.user = users[0]
 

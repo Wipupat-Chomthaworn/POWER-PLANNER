@@ -33,7 +33,9 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+// import axios from "../plugins/axios";
+import axios from '../plugins/axios'
 import NavBar from '../components/NavBar.vue';
 import SideBar from '../components/SideBar.vue';
 

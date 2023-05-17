@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const pool = require("../config");
+const { isLoggedIn } = require('../middlewares/index');//middleware to check is user log in?
 
 router = express.Router();
 
@@ -22,21 +23,22 @@ var storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // ---------------------------add taskgroup
-let usernameTest = "Owena"
-router.post("/api/addTaskGroups", async function (req, res, next) {
+// let userId = "Owena"
+router.post("/api/addTaskGroups",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
   // const file = req.file;
   // const comment = req.body.comment;
+  let userId = req.user.user_id;
   console.log("data : ", req.body);
   // console.log("username : ", req.body.first_name);
   // console.log("email : ", req.body.email);
   try {
     let [results_userID] = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
+      "SELECT * FROM User_info WHERE user_id=?",[
         // req.body.username
-        usernameTest
+        userId
       ]
     );
     console.log('user_id', results_userID);
@@ -70,27 +72,34 @@ router.post("/api/addTaskGroups", async function (req, res, next) {
 });
 
 // ------------------get task_group data
-router.get("/api/TaskGroups", async function (req, res, next) {
+router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
+  let userId = req.user.user_id;
+  console.log("user_id : ", userId);
 
   try {
-    let [results_userID] = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
-        // req.body.username
-        usernameTest
-      ]
-    );
-    let user_id = results_userID[0].user_id;
-    let results_task_group = await conn.query(
+    // let [results_userID] = await conn.query(
+    //   "SELECT * FROM User_info WHERE user_id=?",[
+    //     // req.body.username
+    //     userId
+    //   ]
+    // );
+    // console.log("result_userId : ", results_userID)
+
+    // let user_id = results_userID[0].user_id;
+    // let user_id = results_userID[0].user_id;
+
+    // console.log("user_id : ", userId)
+    let [results_task_group] = await conn.query(
       "SELECT * FROM task_group WHERE user_id=?",[
         // req.body.username
-        user_id
+        userId
       ]
       );
-      results_task_group = results_task_group[0]
-    console.log('user_id', results_task_group);
+      // results_task_group = results_task_group[0]
+    // console.log('results_task_group', results_task_group);
     console.log("task_group---------------", results_task_group);
     res.json(results_task_group);
     await conn.commit();
@@ -110,16 +119,17 @@ router.get("/api/TaskGroups", async function (req, res, next) {
 });
 
 // ------------------get task_group data
-router.get("/api/TaskGroups/:group_id", async function (req, res, next) {
+router.get("/api/TaskGroups/:group_id",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
+  let userId = req.user.user_id;
 
   try {
     let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
-        usernameTest
+        userId
       ]
     );
     let user_id = results_userID[0].user_id;
@@ -160,7 +170,7 @@ router.post("/api/Tasks", async function (req, res, next) {
     let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
-        usernameTest
+        userId
       ]
     );
     let user_id = results_userID[0].user_id;
@@ -202,7 +212,7 @@ router.get("/api/GetTasks", async function (req, res, next) {
     let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
-        usernameTest
+        userId
       ]
     );
     console.log("result_userId", results_userID);
@@ -242,7 +252,7 @@ router.post("/api/SubTask", async function (req, res, next) {
     let [results_userID] = await conn.query(
       "SELECT user_id FROM User_info WHERE username=?",[
         // req.body.username
-        usernameTest
+        userId
       ]
     );
     let user_id = results_userID[0].user_id;
@@ -377,16 +387,7 @@ router.get("/blogs/:id", function (req, res, next) {
       return next(err);
     });
 });
-
-router.put("/blogs/:id", function (req, res) {
-  // Your code here
-  return;
-});
-
-router.delete("/blogs/:id", function (req, res) {
-  // Your code here
-  return;
-});
+//decoy
 router.get("/api/groups/:username", function (req, res, next) {
   console.log(req.params.username);
 //   const promise1 = pool.query("SELECT * FROM blogs WHERE id=?", [
