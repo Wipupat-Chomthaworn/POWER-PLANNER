@@ -1,13 +1,14 @@
-bcrypt 
-backend loggin?
-fontend token?
+bcrypt OK
+backend loggin? OK
+fontend token? OK
 user token?
-img (optional)
+USER profile img (optional)
 add task functional
+add sub task functional
 add kanbaan dragable task status
-add task doing sth page
+add do sth with task page
 --CSS formalise
 
 admin role
     view recent task
-    view all user
+    view all user Ok just view
