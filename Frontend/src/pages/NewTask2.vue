@@ -17,31 +17,22 @@
             <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded">Create Task</button>
         </form>
 
-        <!-- Task list -->
-        <h2 class="text-2xl font-bold mb-4" :style="{ backgroundColor: getGroupColor }">Task List</h2>
-        <table class="w-full border">
-            <thead>
-                <tr>
-                    <th class="px-4 py-2 bg-gray-200">Task Name</th>
-                    <th class="px-4 py-2 bg-gray-200">Task Description</th>
-                    <th class="px-4 py-2 bg-gray-200">Task Status</th>
-                    <th class="px-4 py-2 bg-gray-200">Due Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="task in tasks" :key="task.task_id">
-                    <td class="px-4 py-2">{{ task.task_name }}</td>
-                    <td class="px-4 py-2">{{ task.task_desc }}</td>
-                    <td :class="getTaskStatusColor(task.task_status, task)">
-                        {{ task.task_status }}
-                    </td>
-                    <td class="px-4 py-2">{{ task.due_date }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- task list -->
+        <h2 class="text-2xl font-bold mb-4" :style="{ getGroupColor }">Task List</h2>
+        <ul>
+            <li v-for="task in tasks" :key="task.task_id">
+                <h3 class="text-lg font-bold">{{ task.task_name }}</h3>
+                <p>{{ task.task_desc }}</p>
+                
+                <div :class="getTaskStatusColor(task.task_status, task)">
+                    <p>{{ task.task_status }}</p>
+                </div>
+                <p class="text-gray-500">Due Date: {{ task.due_date }}</p>
+            </li>
+        </ul>
     </div>
 </template>
-
+  
 <script>
 //   import axios from 'axios';
 import axios from '../plugins/axios';
