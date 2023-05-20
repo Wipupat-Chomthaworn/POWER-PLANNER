@@ -1,44 +1,32 @@
 <template>
   <div>
-    <!-- <Navbar /> -->
     <SideBar />
     <div class="p-4 sm:ml-64">
-      <h2>Create a new task group</h2>
-      <br>
-      <form @submit="createTaskGroup">
-        <div class="form-group">
-          <label for="taskGroupName">Task group name:</label>
-          <input type="text" class="form-control" id="taskGroupName" v-model="newTaskGroup.group_name" required>
+      <h2 class="text-2xl font-bold mb-4">Create a new task group</h2>
+      <form @submit="createTaskGroup" class="mb-4">
+        <div class="flex items-center mb-4">
+          <label for="taskGroupName" class="w-32 mr-4">Task group name:</label>
+          <input type="text" class="border border-gray-300 px-2 py-1 rounded" id="taskGroupName" v-model="newTaskGroup.group_name" required>
         </div>
-        <div class="form-group">
-          <label for="taskGroupColor">Task group color:</label>
-          <input type="color" class="form-control" id="taskGroupColor" v-model="newTaskGroup.group_color" required>
+        <div class="flex items-center mb-4">
+          <label for="taskGroupColor" class="w-32 mr-4">Task group color:</label>
+          <input type="color" class="border border-gray-300 px-2 py-1 rounded" id="taskGroupColor" v-model="newTaskGroup.group_color" required>
         </div>
-        <br>
-        <button type="submit" class="btn btn-warning rounded-full">Create Task Group</button>
+        <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded">Create Task Group</button>
       </form>
-      <hr>
-      <h2 class="mb-4">
+      <hr class="my-6">
+      <h2 class="text-2xl font-bold mb-4">
         <span @click="toggleCollapse" style="cursor: pointer;">All task groups:</span>
       </h2>
-      <div v-if="taskGroups.length === 0">No task groups found</div>
-      <ul v-else :class="{ 'hidden': isCollapsed }" class="max-w-full flex flex-wrap">
-        <li v-for="(taskGroup, index) in taskGroups" :key="index"
-          class="pb-3 sm:pb-4 flex items-center w-full bg-gray-100 rounded-lg p-4 mb-4">
-          <router-link :to="'/task-groups/' + taskGroup.id" class="flex-1 min-w-0 ml-3">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-12 h-12 rounded-full" :style="{ backgroundColor: taskGroup.group_color }"></div>
-              </div>
-              <div class="flex-1 min-w-0 ml-3">
-                <h4 :style="taskGroupStyle(taskGroup)" class="text-lg font-medium text-gray-900 truncate dark:text-white">
-                  {{ taskGroup.group_name }}</h4>
-                <p class="text-sm text-gray-500 truncate dark:text-gray-400">Color: {{ taskGroup.group_color }}</p>
-              </div>
-            </div>
+      <div v-if="taskGroups.length === 0" class="text-gray-500">No task groups found</div>
+      <ul v-else :class="{ 'hidden': isCollapsed }" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <li v-for="(taskGroup, index) in taskGroups" :key="index" class="bg-white shadow rounded-lg p-4">
+          <router-link :to="'/task-groups/' + taskGroup.id" class="flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full mb-4" :style="{ backgroundColor: taskGroup.group_color }"></div>
+            <h4 :style="taskGroupStyle(taskGroup)" class="text-lg font-medium text-gray-900 truncate">{{ taskGroup.group_name }}</h4>
+            <p class="text-sm text-gray-500 truncate">Color: {{ taskGroup.group_color }}</p>
           </router-link>
         </li>
-
       </ul>
     </div>
   </div>
@@ -72,7 +60,7 @@ export default {
     createTaskGroup() {
       axios.post('http://localhost:3000/api/addTaskGroups', this.newTaskGroup)
         .then((response) => {
-          this.newTaskGroup.name = '';
+          this.newTaskGroup.group_name = '';
           this.newTaskGroup.group_color = '#000000';
           this.getAllTaskGroups();
           alert(response);
@@ -98,11 +86,11 @@ export default {
     },
     toggleCollapse() {
       this.isCollapsed = !this.isCollapsed;
-    },
+    }
   },
 };
 </script>
 
 <style scoped>
-/* Add tailwind styles here */
+/* Add Tailwind CSS classes here */
 </style>
