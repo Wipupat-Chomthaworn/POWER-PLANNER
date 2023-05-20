@@ -119,7 +119,7 @@ router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
 });
 
 // ------------------get task_group data
-router.get("/api/TaskGroups/:group_id",isLoggedIn, async function (req, res, next) {
+router.get("/api/TaskGroups/:group_id/tasks",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
@@ -133,13 +133,13 @@ router.get("/api/TaskGroups/:group_id",isLoggedIn, async function (req, res, nex
       ]
     );
     let user_id = results_userID[0].user_id;
-    let results_task_group = await conn.query(
+    let [results_task_group] = await conn.query(
       "SELECT * FROM task_group WHERE group_id = ?",[
         // req.body.username
         req.params.group_id
       ]
       );
-      results_task_group = results_task_group[0]
+      // results_task_group = results_task_group[0]
     console.log('user_id', results_task_group);
     console.log("task_group---------------", results_task_group);
     res.json(results_task_group);

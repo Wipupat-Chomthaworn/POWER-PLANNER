@@ -1,6 +1,6 @@
 <template>
-  <NavBar/>
-  <Navbar></Navbar>
+  <Navbar/>
+  <!-- <Navbar></Navbar> -->
 
   <router-view>
 
@@ -9,11 +9,11 @@
 
 <script>
 // import axios from "axios";
-import NavBar from '../components/NavBar.vue';
+import Navbar from '../components/NavBar.vue';
 export default {
   name: 'App',
   components: {
-    NavBar,
+    Navbar,
   },
   data () {
     return {

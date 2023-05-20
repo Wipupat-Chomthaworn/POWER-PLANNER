@@ -5,11 +5,10 @@ const bcrypt = require('bcrypt');
 const { generateToken } = require("../utils/token")// import for gen token
 const { isLoggedIn } = require('../middlewares/index');//middleware to check is user log in?
 
-router = express.Router();
-
 // Require multer for file upload
 const multer = require("multer");
 const { group, log } = require("console");
+const { router } = require("./reminder");
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -23,7 +22,7 @@ var storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-
+// const router = express.Router();
 // Create new user
 router.post("/signup", async function (req, res, next) {
   const conn = await pool.getConnection();
@@ -180,6 +179,11 @@ router.post("/api/login", async function (req, res, next) {
   //   // console.log("dataFromDB", results);
   // }
 });
+
+router.get("/api/user", isLoggedIn, async function (req, res) {
+  
+  res.status(200).send(req.user)
+})
 router.get("/api/viewUser",isLoggedIn, async function (req, res) {
   // Your code here
   let [allUsers] = await pool.query("SELECT * FROM `user_info`")

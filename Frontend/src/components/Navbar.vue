@@ -25,7 +25,7 @@
           </a>
         </div>
         <!-- User Pic -->
-        <div class="flex items-center" id="userInfo" >
+        <div class="flex items-center" id="userInfo" v-if="isLoggedIn">
           <div class="flex items-center ml-3">
             <div>
               <button type="button"
@@ -36,17 +36,17 @@
                   alt="user photo">
               </button>
             </div>
-            <div
+            <div 
               class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
               id="dropdown-user">
               <div class="px-4 py-3" role="none">
                 <p class="text-sm text-gray-900 dark:text-white" role="none">
-                  Neil Sims
-                  <!-- {{ user.fname }} -->
+                  <!-- Neil Sims -->
+                  {{ user.username }}
                 </p>
                 <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                  neil.sims@flowbite.com
-                  <!-- {{ user.email }} -->
+                  <!-- neil.sims@flowbite.com -->
+                  {{ user.email }}
                 </p>
               </div>
               <ul class="py-1" role="none">
@@ -62,7 +62,7 @@
                     Settings</a>
                 </li>
                 <li>
-                  <a href="#"
+                  <a href="/" @click="logout"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem">Sign out</a>
                 </li>
@@ -80,35 +80,73 @@ import axios from '../plugins/axios';
 
 
 export default {
+  // props: {
+  //   isLoggedIn: {
+  //     type: Boolean,
+  //     required: true,
+  //   },
+  //   // Other props
+  // },
   data() {
     return {
       user: {
-        name: '',
+        username: '',
         email: '',
-        // Avatar: require('../assets/avatar.jpg')
-      }
+        Avatar: '../assets/avatar.jpg'
+      },
+      isLoggedIn : false
     };
   },
   mounted() {
     this.fetchUserInfo();
   },
-  computed: {
-  userAvatar() {
-    return this.user.Avatar;
-  }
-},
+  watch: {
+    // isLoggedIn(newStatus) {
+    //   if (newStatus) {
+    //     // User logged in
+    //     // Perform any necessary actions
+    //     this.fetchUserInfo(); // Refresh user data
+    //     window.location.reload()
+    //     console.log("watch:", newStatus)
+
+    //   } else {
+    //     // User logged out
+    //     // Perform any necessary actions
+    //     console.log("watch else")
+
+    //   }
+    // }
+  },
+//   computed: {
+//     isLoggedIn() {
+//       if (!this.isLoggedIn)
+//           this.fetchUserInfo(); // Refresh user data
+//         // window.location.reload()
+//         this.isLoggedIn = true
+//         console.log("computed")
+//     }
+//   // userAvatar() {
+//   //   return this.user.Avatar;
+//   // }
+// },
   methods: {
     fetchUserInfo() {
       axios.get('/api/user')
         .then(response => {
-          this.user.name = response.data.name;
+          this.isLoggedIn = true,
+          this.user.username = response.data.username;
           this.user.email = response.data.email;
           // this.user.Avatar = response.data.Avatar;
         })
         .catch(error => {
-          console.error(error);
+          console.log(error);
+          this.isLoggedIn = false
         });
-    }
+    },
+    logout() {
+    // Remove the "token" from localStorage
+    localStorage.clear();
+  }
   }
 };
 </script>

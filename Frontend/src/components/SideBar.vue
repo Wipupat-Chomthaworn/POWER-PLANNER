@@ -148,7 +148,7 @@ export default {
       },
   logout() {
     // Remove the "token" from localStorage
-    localStorage.removeItem('token');
+    localStorage.clear();
   }
 }
 
