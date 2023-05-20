@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <NavBar /> -->
+    <!-- <Navbar /> -->
     <SideBar />
     <div class="p-4 sm:ml-64">
       <h2>Create a new task group</h2>
@@ -18,31 +18,42 @@
         <button type="submit" class="btn btn-warning rounded-full">Create Task Group</button>
       </form>
       <hr>
-      <h2>
+      <h2 class="mb-4">
         <span @click="toggleCollapse" style="cursor: pointer;">All task groups:</span>
       </h2>
       <div v-if="taskGroups.length === 0">No task groups found</div>
-      <ul v-else :class="{ 'hidden': isCollapsed }">
-        <li v-for="(taskGroup, index) in taskGroups" :key="index">
-          <h4 :style="taskGroupStyle(taskGroup)">{{ taskGroup.group_name }}</h4>
-          <p>Color: {{ taskGroup.group_color }}</p>
+      <ul v-else :class="{ 'hidden': isCollapsed }" class="max-w-full flex flex-wrap">
+        <li v-for="(taskGroup, index) in taskGroups" :key="index"
+          class="pb-3 sm:pb-4 flex items-center w-full bg-gray-100 rounded-lg p-4 mb-4">
+          <router-link :to="'/task-groups/' + taskGroup.id" class="flex-1 min-w-0 ml-3">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 rounded-full" :style="{ backgroundColor: taskGroup.group_color }"></div>
+              </div>
+              <div class="flex-1 min-w-0 ml-3">
+                <h4 :style="taskGroupStyle(taskGroup)" class="text-lg font-medium text-gray-900 truncate dark:text-white">
+                  {{ taskGroup.group_name }}</h4>
+                <p class="text-sm text-gray-500 truncate dark:text-gray-400">Color: {{ taskGroup.group_color }}</p>
+              </div>
+            </div>
+          </router-link>
         </li>
+
       </ul>
     </div>
   </div>
 </template>
 
 <script>
-// import axios from "axios";
-// import axios from "../plugins/axios";
 import axios from '../plugins/axios';
-import NavBar from '../components/NavBar.vue';
+import Navbar from '../components/Navbar.vue';
 import SideBar from '../components/SideBar.vue';
 
 export default {
   name: 'App',
   components: {
-    NavBar, SideBar,
+    Navbar,
+    SideBar,
   },
   data() {
     return {
@@ -87,9 +98,9 @@ export default {
     },
     toggleCollapse() {
       this.isCollapsed = !this.isCollapsed;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
