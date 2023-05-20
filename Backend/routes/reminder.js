@@ -118,30 +118,33 @@ router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
   }
 });
 
-// ------------------get task_group data
+// ------------------get task in task_group
 router.get("/api/TaskGroups/:group_id/tasks",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
+  console.log("task in group", req.params.group_id)
   await conn.beginTransaction();
   let userId = req.user.user_id;
+  let group_id = req.params.group_id
 
   try {
-    let [results_userID] = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
-        // req.body.username
-        userId
-      ]
-    );
-    let user_id = results_userID[0].user_id;
+    // let [results_userID] = await conn.query(
+    //   "SELECT user_id FROM User_info WHERE username=?",[
+    //     // req.body.username
+    //     userId
+    //   ]
+    // );
+    // let user_id = results_userID[0].user_id;
+    
     let [results_task_group] = await conn.query(
-      "SELECT * FROM task_group WHERE group_id = ?",[
+      "SELECT *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` FROM task WHERE group_id = ?",[
         // req.body.username
         req.params.group_id
       ]
       );
       // results_task_group = results_task_group[0]
-    console.log('user_id', results_task_group);
-    console.log("task_group---------------", results_task_group);
+    console.log('user_id', userId);
+    console.log("tasks in task_group---------------", results_task_group);
     res.json(results_task_group);
     await conn.commit();
     console.log("success group added", new Date());
@@ -167,13 +170,6 @@ router.post("/api/Tasks",isLoggedIn, async function (req, res, next) {
   await conn.beginTransaction();
   let userId = req.user.user_id;
   try {
-    // let [results_userID] = await conn.query(
-    //   "SELECT user_id FROM User_info WHERE username=?",[
-    //     // req.body.username
-    //     userId
-    //   ]
-    // );
-    // let user_id = results_userID[0].user_id;
     let insert_task = await conn.query(
       "INSERT INTO task (task_id, task_name, task_desc, task_status, due_date, created_at, updated_at, group_id, notify_pref) VALUES (null, ?, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'no')",[
         // req.body.username
@@ -183,7 +179,7 @@ router.post("/api/Tasks",isLoggedIn, async function (req, res, next) {
         req.body.group_id,
       ]
       );
-    console.log('user_id', results_userID);
+    // console.log('user_id', results_userID);
     console.log('ins', insert_task);
 
     // res.json(results_task_group);
@@ -219,7 +215,7 @@ router.get("/api/GetTasks",isLoggedIn, async function (req, res, next) {
     // console.log("result_userId", results_userID);
     // let user_id = results_userID[0].user_id;
     let [results_task] = await conn.query(
-      "Select * from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",[
+      "Select *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",[
         // req.body.username
         userId,
       ]

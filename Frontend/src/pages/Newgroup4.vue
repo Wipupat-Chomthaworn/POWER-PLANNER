@@ -12,6 +12,10 @@
           <label for="taskGroupColor" class="w-32 mr-4">Task group color:</label>
           <input type="color" class="border border-gray-300 px-2 py-1 rounded" id="taskGroupColor" v-model="newTaskGroup.group_color" required>
         </div>
+        <div class="flex items-center mb-4">
+          <label for="taskGroupDescription" class="w-32 mr-4">Task group description:</label>
+          <textarea class="border border-gray-300 px-2 py-1 rounded" id="taskGroupDescription" v-model="newTaskGroup.group_description"></textarea>
+        </div>
         <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded">Create Task Group</button>
       </form>
       <hr class="my-6">
@@ -21,10 +25,11 @@
       <div v-if="taskGroups.length === 0" class="text-gray-500">No task groups found</div>
       <ul v-else :class="{ 'hidden': isCollapsed }" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <li v-for="(taskGroup, index) in taskGroups" :key="index" class="bg-white shadow rounded-lg p-4">
-          <router-link :to="'/taskGroups/' + taskGroup.group_id + '/tasks'" class="flex flex-col items-center">
+          <router-link :to="'/task-groups/' + taskGroup.id" class="flex flex-col items-center">
             <div class="w-20 h-20 rounded-full mb-4" :style="{ backgroundColor: taskGroup.group_color }"></div>
             <h4 :style="taskGroupStyle(taskGroup)" class="text-lg font-medium text-gray-900 truncate">{{ taskGroup.group_name }}</h4>
             <p class="text-sm text-gray-500 truncate">Color: {{ taskGroup.group_color }}</p>
+            <p class="text-sm text-gray-500">{{ taskGroup.group_description }}</p>
           </router-link>
         </li>
       </ul>
@@ -32,13 +37,14 @@
   </div>
 </template>
 
+
 <script>
 import axios from '../plugins/axios';
 import Navbar from '../components/Navbar.vue';
 import SideBar from '../components/SideBar.vue';
 
 export default {
-  name: 'NewGroup',
+  name: 'App',
   components: {
     Navbar,
     SideBar,
