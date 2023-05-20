@@ -167,13 +167,13 @@ router.post("/api/Tasks",isLoggedIn, async function (req, res, next) {
   await conn.beginTransaction();
   let userId = req.user.user_id;
   try {
-    let [results_userID] = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
-        // req.body.username
-        userId
-      ]
-    );
-    let user_id = results_userID[0].user_id;
+    // let [results_userID] = await conn.query(
+    //   "SELECT user_id FROM User_info WHERE username=?",[
+    //     // req.body.username
+    //     userId
+    //   ]
+    // );
+    // let user_id = results_userID[0].user_id;
     let insert_task = await conn.query(
       "INSERT INTO task (task_id, task_name, task_desc, task_status, due_date, created_at, updated_at, group_id, notify_pref) VALUES (null, ?, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'no')",[
         // req.body.username

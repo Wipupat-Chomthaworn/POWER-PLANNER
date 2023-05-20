@@ -19,17 +19,20 @@
             <!-- <img src="../assets/logo.jpg" class="h-8 mr-3" alt="Power Planner Logo" /> -->
             <img src="../assets/logo2d2.png" class="h-8 mr-3" alt="Power Planner Logo" />
 
-            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Power Planner</span>
+            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+              Power Planner
+            </span>
           </a>
         </div>
-        <div class="flex items-center" v-if="false">
+        <!-- User Pic -->
+        <div class="flex items-center" id="userInfo" >
           <div class="flex items-center ml-3">
             <div>
               <button type="button"
                 class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                 aria-expanded="false" data-dropdown-toggle="dropdown-user">
                 <span class="sr-only">Open user menu</span>
-                <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                <img class="w-8 h-8 rounded-full" :src="userAvatar"
                   alt="user photo">
               </button>
             </div>
@@ -58,18 +61,54 @@
                     role="menuitem">
                     Settings</a>
                 </li>
-              <li>
-                <a href="#"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                  role="menuitem">Sign out</a>
-              </li>
-            </ul>
+                <li>
+                  <a href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                    role="menuitem">Sign out</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</nav>
+  </nav>
 </template>
 <script>
+// import axios from 'axios';
+import axios from '../plugins/axios';
+
+
+export default {
+  data() {
+    return {
+      user: {
+        name: '',
+        email: '',
+        // Avatar: require('../assets/avatar.jpg')
+      }
+    };
+  },
+  mounted() {
+    this.fetchUserInfo();
+  },
+  computed: {
+  userAvatar() {
+    return this.user.Avatar;
+  }
+},
+  methods: {
+    fetchUserInfo() {
+      axios.get('/api/user')
+        .then(response => {
+          this.user.name = response.data.name;
+          this.user.email = response.data.email;
+          // this.user.Avatar = response.data.Avatar;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }
+};
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NavBar />
+    <!-- <NavBar /> -->
     <SideBar />
     <div class="p-4 sm:ml-64">
       <h2>Create a new task group</h2>

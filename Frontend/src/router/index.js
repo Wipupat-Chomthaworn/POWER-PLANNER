@@ -72,6 +72,7 @@ import AddTask from "../pages/AddTask.vue";
 import NewGroup from "../pages/NewGroup.vue";
 import Remaining from "../pages/TaskRemining.vue";
 import Kanban from "../pages/Kanban.vue";
+import Task from "../pages/Task.vue"
 
 
 import ViewUser from "../pages/ViewUser.vue";
@@ -112,6 +113,11 @@ const router = createRouter({
       path: "/kanban",
       meta: { login: true },
       component: Kanban,
+    },
+    {
+      path: "/task",
+      meta: { login: true },
+      component: Task,
     },
 
     {

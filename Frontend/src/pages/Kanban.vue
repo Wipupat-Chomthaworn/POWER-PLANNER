@@ -40,7 +40,9 @@
   </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import axios from '../plugins/axios';
+
 import { mapState } from 'vuex'
 import { draggable, dropzone } from 'vuedraggable'
 
