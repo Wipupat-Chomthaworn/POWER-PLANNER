@@ -80,18 +80,6 @@ router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
   console.log("user_id : ", userId);
 
   try {
-    // let [results_userID] = await conn.query(
-    //   "SELECT * FROM User_info WHERE user_id=?",[
-    //     // req.body.username
-    //     userId
-    //   ]
-    // );
-    // console.log("result_userId : ", results_userID)
-
-    // let user_id = results_userID[0].user_id;
-    // let user_id = results_userID[0].user_id;
-
-    // console.log("user_id : ", userId)
     let [results_task_group] = await conn.query(
       "SELECT * FROM task_group WHERE user_id=?",[
         // req.body.username
@@ -103,51 +91,7 @@ router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
     console.log("task_group---------------", results_task_group);
     res.json(results_task_group);
     await conn.commit();
-    console.log("success group getted", new Date());
-    res.status(200);
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code)
-  } finally {
-    // res.status(200);
-    console.log("finally group");
-    conn.release();
-  }
-});
-
-// ------------------get task in task_group
-router.get("/api/TaskGroups/:group_id/tasks",isLoggedIn, async function (req, res, next) {
-  const conn = await pool.getConnection();
-  // Begin transaction
-  console.log("task in group", req.params.group_id)
-  await conn.beginTransaction();
-  let userId = req.user.user_id;
-  let group_id = req.params.group_id
-
-  try {
-    // let [results_userID] = await conn.query(
-    //   "SELECT user_id FROM User_info WHERE username=?",[
-    //     // req.body.username
-    //     userId
-    //   ]
-    // );
-    // let user_id = results_userID[0].user_id;
-    
-    let [results_task_group] = await conn.query(
-      "SELECT *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` FROM task WHERE group_id = ?",[
-        // req.body.username
-        req.params.group_id
-      ]
-      );
-      // results_task_group = results_task_group[0]
-    console.log('user_id', userId);
-    console.log("tasks in task_group---------------", results_task_group);
-    res.json(results_task_group);
-    await conn.commit();
-    console.log("success task in group getted", new Date());
+    console.log("success group added", new Date());
     res.status(200);
   } catch (err) {
     await conn.rollback();
@@ -163,122 +107,6 @@ router.get("/api/TaskGroups/:group_id/tasks",isLoggedIn, async function (req, re
 });
 
 
-// add task
-router.post("/api/Tasks",isLoggedIn, async function (req, res, next) {
-  const conn = await pool.getConnection();
-  // Begin transaction
-  await conn.beginTransaction();
-  let userId = req.user.user_id;
-  try {
-    let insert_task = await conn.query(
-      "INSERT INTO task (task_id, task_name, task_desc, task_status, due_date, created_at, updated_at, group_id, notify_pref) VALUES (null, ?, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'no')",[
-        // req.body.username
-        req.body.task_name,
-        req.body.task_desc,
-        // req.body.due_date,
-        req.body.group_id,
-      ]
-      );
-    // console.log('user_id', results_userID);
-    console.log('ins', insert_task);
-
-    // res.json(results_task_group);
-    await conn.commit();
-    console.log("success task added", new Date());
-    res.status(200).json(insert_task);
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code)
-  } finally {
-    // res.status(200);
-    console.log("finally add task");
-    conn.release();
-  }
-});
-// Get tasks
-router.get("/api/GetTasks",isLoggedIn, async function (req, res, next) {
-  const conn = await pool.getConnection();
-  // Begin transaction
-  await conn.beginTransaction();
-  let userId = req.user.user_id;
-
-  try {
-    // let [results_userID] = await conn.query(
-    //   "SELECT user_id FROM User_info WHERE username=?",[
-    //     // req.body.username
-    //     userId
-    //   ]
-    // );
-    // console.log("result_userId", results_userID);
-    // let user_id = results_userID[0].user_id;
-    let [results_task] = await conn.query(
-      "Select *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",[
-        // req.body.username
-        userId,
-      ]
-      );
-      // results_task = results_task[0];
-    console.log('result_task', results_task);
-
-    // res.json(results_task_group);
-    await conn.commit();
-    console.log("success task Getted", new Date());
-    res.status(200).json(results_task);
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code)
-  } finally {
-    // res.status(200);
-    conn.release();
-  }
-});
-// -----------------------add subtask
-router.post("/api/SubTask", async function (req, res, next) {
-  const conn = await pool.getConnection();
-  // Begin transaction
-  await conn.beginTransaction();
-
-  try {
-    let [results_userID] = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
-        // req.body.username
-        userId
-      ]
-    );
-    let user_id = results_userID[0].user_id;
-    let insert_subtask = await conn.query(
-      "INSERT INTO sub_task (subtask_id, subtask_desc, subtask_status, created_at, updated_at, task_id) VALUES (null, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)",[
-        // req.body.username
-        req.body.subtask_desc,
-        // req.body.due_date,
-        req.body.task_id,
-      ]
-      );
-    console.log('user_id', results_userID);
-    console.log('ins', insert_subtask);
-
-    // res.json(results_task_group);
-    await conn.commit();
-    console.log("success subtask added", new Date());
-    res.status(200).json(insert_subtask);
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code)
-  } finally {
-    // res.status(200);
-    console.log("finally add subtask");
-    conn.release();
-  }
-});
 // admin
 
 router.post("/blogs/addlike/:blogId", async function (req, res, next) {
