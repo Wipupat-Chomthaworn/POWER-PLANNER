@@ -39,15 +39,19 @@
             </thead>
             <tbody>
                 <tr v-for="task in tasks" :key="task.task_id">
-                    <td class="px-4 py-2">
-                        <!-- edit task Name -->
-                        <template v-if="task.editing">
-                            <input type="text" v-model="task.task_name" class="form-control" required>
-                        </template>
-                        <template v-else>
-                            {{ task.task_name }}
-                        </template>
-                    </td>
+                    <!-- click at task name to router link to subtask page -->
+                    <router-link :to="`/subtasks/${task.task_id}`" class="hover:bg-green-600 active:bg-violet-700">
+                        <td class="px-4 py-2 TaskNameCSS">
+                            <!-- edit task Name -->
+                            <template v-if="task.editing">
+                                <input type="text" v-model="task.task_name" class="form-control" required>
+                            </template>
+                            <template v-else>
+                                {{ task.task_name }}
+                            </template>
+
+                        </td>
+                    </router-link>
                     <!-- edit task Description -->
                     <td class="px-4 py-2">
                         <template v-if="task.editing">
@@ -68,7 +72,7 @@
                     <!-- <td :class="getTaskStatusColor(task.task_status, task)">
                         {{ task.task_status }}
                     </td> -->
-                <!-- task status -->
+                    <!-- task status -->
                     <td class="px-4 py-2" :class="getTaskStatusColor(task.task_status, task)">
                         <template v-if="task.editing">
                             <select v-model="task.task_status" class="form-control" required>
@@ -232,5 +236,56 @@ export default {
   
 <style scoped>
 /* Add tailwind styles here */
+.overflow-x-auto {
+    overflow-x: auto;
+}
+
+.table {
+    display: table;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.table tbody+tbody {
+    border-top: 2px solid #e2e8f0;
+}
+
+.table .table {
+    background-color: #fff;
+}
+
+.table-sm th,
+.table-sm td {
+    padding: 0.5rem;
+}
+
+.table-bordered {
+    border: 1px solid #e2e8f0;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #e2e8f0;
+}
+
+.task-name {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.task-name:hover {
+    text-decoration: dashed;
+    background-color: #15ee52;
+    /* border-radius: 50%; */
+}
 </style>
   
