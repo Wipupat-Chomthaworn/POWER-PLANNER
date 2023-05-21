@@ -429,6 +429,36 @@ router.delete("/api/del/:subtaskId", async function (req, res, next) {
     conn.release();
   }
 });
+// -----------------------update subtask
+router.put("/api/updateSubtask/:subtaskId", async function (req, res, next) {
+  const conn = await pool.getConnection();
+  // Begin transaction
+  await conn.beginTransaction()
+  let user = req.user;
+  try {
+    let [insert_subtask] = await conn.query(
+      "update sub_task set subtask_status='Done' where subtask_id = ?",
+      [
+        req.params.subtaskId,
+      ]
+    );
+    // res.json(results_task_group);
+    await conn.commit();
+    console.log("success subtask added", new Date());
+    res.status(200).json("Delete success");
+  } catch (err) {
+    await conn.rollback();
+    next(err);
+    console.log("error : ", err);
+    // res.send(err.message);
+    // res.status(err.code);
+    res.status(err.code).send(err.message);
+  } finally {
+    // res.status(200);
+    console.log("finally del subtask");
+    conn.release();
+  }
+});
 // -----------------------get subtask
 router.get("/api/:taskId/subtasks", async function (req, res, next) {
   let user = req.user;

@@ -31,7 +31,7 @@
                 {{ subtask.subtask_status }}
               </td>
               <td class="px-4 py-2">
-                <button @click="editSubtask(subtask)" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Edit</button>
+                <button @click="markAsDone(subtask)" v-if="subtask.subtask_status === 'Todo'" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Mark as Done</button>
                 <button @click="deleteSubtask(subtask)" class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded">Delete</button>
               </td>
             </tr>
@@ -93,8 +93,17 @@ export default {
     getSubtaskStatusColor(subtaskStatus) {
       return subtaskStatus === 'Done' ? 'bg-green-500 text-white text-center' : 'bg-blue-500 text-white text-center';
     },
-    editSubtask(subtask) {
-      // TODO: Implement edit functionality
+    markAsDone(subtask) {
+      subtask.subtask_status = 'Done';
+      axios
+        .put(`/api/updateSubtask/${subtask.subtask_id}`, subtask)
+        .then((response) => {
+          alert("Mask As Done!");
+          this.fetchSubtasks();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
     deleteSubtask(subtask) {
       axios
