@@ -100,6 +100,8 @@
                             <template v-if="task.editing">
                                 <button @click="saveTask(task)"
                                     class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Save</button>
+                                <button @click="deleteTask(task)"
+                                    class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded">Delete</button>
                                 <button @click="cancelEdit(task)"
                                     class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded">Cancel</button>
                             </template>
@@ -107,8 +109,8 @@
                             <template v-else>
                                 <button @click="editTask(task)"
                                     class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Edit</button>
-                                
-                                    <!-- click at button to router link to subtask page -->
+
+                                <!-- click at button to router link to subtask page -->
                                 <router-link :to="`/subtasks/${task.task_id}`"
                                     class="bg-blue-500 hover:bg-yellow-400 text-white py-2 px-4 rounded">
                                     View Subtasks
@@ -198,16 +200,16 @@ export default {
             const currentDate = new Date();
 
             if (dueDate < currentDate & taskStatus != "Done") {
-                return 'bg-red-500 text-white'; // Apply red color for overdue tasks
+                return 'bg-red-500 text-white text-center'; // Apply red color for overdue tasks
             }
             else {
                 switch (taskStatus) {
                     case 'Done':
-                        return 'bg-green-500 text-white';
+                        return 'bg-green-500 text-white text-center';
                     case 'Todo':
-                        return 'bg-yellow-500 text-black';
+                        return 'bg-yellow-500 text-black text-center';
                     case 'Doing':
-                        return 'bg-blue-500 text-white';
+                        return 'bg-blue-500 text-white text-center';
                     default:
                         return '';
                 }
@@ -229,6 +231,27 @@ export default {
                 .catch((error) => {
                     alert("save task error");
                     console.log('save task error')
+                    console.error(error);
+                });
+        },
+        // to delete task ( send to backend )
+        deleteTask(task) {
+            axios
+                .delete(`/api/deleteTasks/${task.task_id}`, task)
+                .then((response) => {
+                    task.editing = false;
+                    alert(response.data.message);
+                    // Find the index of the task in the local array
+                    const index = this.tasks.findIndex(t => t.task_id === task.task_id);
+                    if (index !== -1) {
+                        //-1 is not found so !-1 is found
+                        // Remove the task from the local array
+                        this.tasks.splice(index, 1);
+                    }
+                })
+                .catch((error) => {
+                    alert("delete task error");
+                    console.log('delete task error')
                     console.error(error);
                 });
         },

@@ -21,6 +21,7 @@
     "tw-elements": "^1.0.0-beta1",
     "vue": "^3.2.47",
     "vue-carousel": "^0.18.0",
+    "vue-draggable-nested-tree": "^3.0.0-beta3",
     "vue-router": "^4.1.6",
     "vuedraggable": "^2.24.3",
     "vuex": "^4.1.0"

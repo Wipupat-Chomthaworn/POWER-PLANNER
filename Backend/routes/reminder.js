@@ -283,6 +283,47 @@ router.put(
     }
   }
 );
+// delete tasks
+router.delete(
+  "/api/deleteTasks/:task_id",
+  isLoggedIn,
+  async function (req, res, next) {
+    const conn = await pool.getConnection();
+    console.log("Delete tasks");
+    // Begin transaction
+    await conn.beginTransaction();
+    let userId = req.user.user_id;
+    let task_id = req.params.task_id;
+    try {
+      let [results_task] = await conn.query(
+        "delete from TASK where task_id=?",
+        [task_id]
+      );
+      console.log("result_task", results_task);
+      if (results_task.affectedRows === 1) {
+        await conn.commit();
+        console.log("success task Deleted", new Date());
+        res.status(200).json({
+          message: `Task ${task_id} Is Deleted`,
+        });
+      }
+      else{
+        throw { message: "Invalid Delete", code: 400 }; // Throw an error object with a message and a code
+      }
+    } catch (err) {
+      await conn.rollback();
+      next(err);
+      console.log("error : ", err);
+      // res.send(err.message);
+      // res.status(err.code);
+      res.status(err.code).send(err.message);
+    } finally {
+      // res.status(200);
+      conn.release();
+      console.log("delete task finally");
+    }
+  }
+);
 
 // -----------------------add subtask
 router.post("/api/SubTask", async function (req, res, next) {

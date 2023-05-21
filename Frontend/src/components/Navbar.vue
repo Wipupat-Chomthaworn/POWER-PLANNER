@@ -19,7 +19,7 @@
             <!-- <img src="../assets/logo.jpg" class="h-8 mr-3" alt="Power Planner Logo" /> -->
             <img src="../assets/logo2d2.png" class="h-8 mr-3" alt="Power Planner Logo" />
 
-            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
               Power Planner
             </span>
           </a>
@@ -92,7 +92,7 @@ export default {
       user: {
         username: '',
         email: '',
-        Avatar: '../assets/avatar.jpg'
+        Avatar: 'http://localhost:3000/assets/avatar.jpg'
       },
       isLoggedIn : false
     };
