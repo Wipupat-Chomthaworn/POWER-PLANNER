@@ -283,6 +283,49 @@ router.put(
     }
   }
 );
+// Update tasks status KANBAN
+router.put(
+  "/api/kanbanStatusTask/:task_id",
+  isLoggedIn,
+  async function (req, res, next) {
+    const conn = await pool.getConnection();
+    console.log("Update tasks");
+    // Begin transaction
+    await conn.beginTransaction();
+    let userId = req.user.user_id;
+    let task_id = req.params.task_id;
+    let task_status = req.body.task_status;
+
+    try {
+      let [results_task] = await conn.query(
+        "UPDATE TASK SET task_status = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
+        [task_status, task_id]
+      );
+      console.log("result_task", results_task);
+      if (results_task.affectedRows === 1) {
+        await conn.commit();
+        console.log("success task Updated", new Date());
+        res.status(200).json({
+          message: `Task ${task_id} Is Updated`,
+        });
+      }
+      else{
+        throw { message: "Invalid Update Status", code: 400 }; // Throw an error object with a message and a code
+      }
+    } catch (err) {
+      await conn.rollback();
+      next(err);
+      console.log("error : ", err);
+      // res.send(err.message);
+      // res.status(err.code);
+      res.status(err.code).send(err.message);
+    } finally {
+      // res.status(200);
+      conn.release();
+      console.log("update task finally");
+    }
+  }
+);
 // delete tasks
 router.delete(
   "/api/deleteTasks/:task_id",

@@ -74,6 +74,8 @@ import Remaining from "../pages/TaskRemining.vue";
 import Kanban from "../pages/Kanban.vue";
 import Task from "../pages/Taskpage.vue";
 import NewTask from "../pages/NewTask.vue"
+import ResetPass from "../pages/Resetpass.vue"
+
 
 import ViewUser from "../pages/ViewUser.vue";
 
@@ -145,6 +147,11 @@ const router = createRouter({
       component: Profile,
     },
     {
+      path: "/resetPassword",
+      name: "Resetpass",
+      component: ResetPass,
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: Notfound,
     },
@@ -157,6 +164,9 @@ router.beforeEach((to, from, next) => {
   if (to.meta.login && !isLoggedIn) {
     alert("Please login first!");
     next({ path: "/log" });
+  }
+  else{
+    localStorage.setItem("t", "c")
   }
 
   next();
