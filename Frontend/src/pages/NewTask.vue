@@ -111,7 +111,7 @@
                                     class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Edit</button>
 
                                 <!-- click at button to router link to subtask page -->
-                                <router-link :to="`/subtasks/${task.task_id}`"
+                                <router-link :to="`/taskGroups/${task.task_id}/subtask`"
                                     class="bg-blue-500 hover:bg-yellow-400 text-white py-2 px-4 rounded">
                                     View Subtasks
                                 </router-link>

@@ -12,7 +12,9 @@ import NewGroup from "../pages/NewGroup.vue";
 import Remaining from "../pages/TaskRemining.vue";
 import Kanban from "../pages/Kanban.vue";
 import Task from "../pages/Taskpage.vue";
-import NewTask from "../pages/NewTask.vue"
+import NewTask from "../pages/NewTask.vue";
+import NewSubtask from "../pages/NewSubtask.vue";
+
 import ResetPass from "../pages/Resetpass.vue"
 
 
@@ -46,6 +48,11 @@ const router = createRouter({
       path: "/taskGroups/:taskGroupId/tasks",
       meta: { login: true },
       component: NewTask,
+    },
+    {
+      path: "/taskGroups/:taskId/subtask",
+      meta: { login: true },
+      component: NewSubtask,
     },
     {
       path: "/remaining",

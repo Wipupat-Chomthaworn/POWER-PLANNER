@@ -61,7 +61,7 @@ CREATE TABLE `task` (
 
 CREATE TABLE `sub_task` (
   `subtask_id` int(10) NOT NULL AUTO_INCREMENT,
-  `subtask_des` varchar(255) NOT NULL,
+  `subtask_desc` varchar(255) NOT NULL,
   `subtask_status` enum('Done','Todo') NOT NULL DEFAULT 'Todo',
   `task_id` int(10) NOT NULL,
   PRIMARY KEY (`subtask_id`),
