@@ -13,49 +13,54 @@
             </div>
             <div class="form-group">
                 <label for="taskDescription">Task Description:</label>
-                <textarea class="form-control" id="taskDescription" v-model="newTask.task_description" rows="4"
+                <textarea class="form-control" id="taskDescription" v-model="newTask.task_desc" rows="4"
                     required></textarea>
             </div>
-            <br>g
+            <div class="form-group">
+                <label for="dueDate">Due Date:</label>
+                <input type="date" class="form-control" id="dueDate" v-model="newTask.due_date" required>
+            </div>
+            <br>
             <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded">Create Task</button>
         </form>
 
+
         <!-- Task list -->
-<h2 class="text-2xl font-bold mb-4" :style="{ backgroundColor: getGroupColor() }">Task List</h2>
-<table class="w-full border">
-    <thead>
-        <tr>
-            <th class="px-4 py-2 bg-gray-200">Task Name</th>
-            <th class="px-4 py-2 bg-gray-200">Task Description</th>
-            <th class="px-4 py-2 bg-gray-200">Task Status</th>
-            <th class="px-4 py-2 bg-gray-200">Due Date</th>
-            <th class="px-4 py-2 bg-gray-200">Actions</th> <!-- Added Actions column -->
-        </tr>
-    </thead>
-    <tbody>
-        <tr v-for="task in tasks" :key="task.task_id">
-            <td class="px-4 py-2">{{ task.task_name }}</td>
-            <td class="px-4 py-2">
-                <div v-if="task.task_desc.length > 100">
-                    {{ task.task_desc.slice(0, 100) }}<br>
-                    {{ task.task_desc.slice(100) }}
-                </div>
-                <div v-else>
-                    {{ task.task_desc }}
-                </div>
-            </td>
-            <td :class="getTaskStatusColor(task.task_status, task)">
-                {{ task.task_status }}
-            </td>
-            <td class="px-4 py-2">{{ task.due_date }}</td>
-            <td class="px-4 py-2">
-                <router-link :to="`/tasks/${task.task_id}/subtasks/create`"
-                    class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Create Subtask</router-link>
-                <!-- <router-link :to="`/tasks/${task.task_id}/subtasks/view`" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">View Subtasks</router-link> -->
-            </td>
-        </tr>
-    </tbody>
-</table>
+        <h2 class="text-2xl font-bold mb-4" :style="{ backgroundColor: getGroupColor() }">Task List</h2>
+        <table class="w-full border">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 bg-gray-200">Task Name</th>
+                    <th class="px-4 py-2 bg-gray-200">Task Description</th>
+                    <th class="px-4 py-2 bg-gray-200">Task Status</th>
+                    <th class="px-4 py-2 bg-gray-200">Due Date</th>
+                    <th class="px-4 py-2 bg-gray-200">Actions</th> <!-- Added Actions column -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="task in tasks" :key="task.task_id">
+                    <td class="px-4 py-2">{{ task.task_name }}</td>
+                    <td class="px-4 py-2">
+                        <div v-if="task.task_desc.length > 100">
+                            {{ task.task_desc.slice(0, 100) }}<br>
+                            {{ task.task_desc.slice(100) }}
+                        </div>
+                        <div v-else>
+                            {{ task.task_desc }}
+                        </div>
+                    </td>
+                    <td :class="getTaskStatusColor(task.task_status, task)">
+                        {{ task.task_status }}
+                    </td>
+                    <td class="px-4 py-2">{{ task.due_date }}</td>
+                    <td class="px-4 py-2">
+                        <router-link :to="`/tasks/${task.task_id}/subtasks/create`"
+                            class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Create Subtask</router-link>
+                        <!-- <router-link :to="`/tasks/${task.task_id}/subtasks/view`" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">View Subtasks</router-link> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -77,14 +82,15 @@ export default {
             tasks: [],
             newTask: {
                 task_name: '',
-                task_description: '',
-                taskGroup: null,
+                task_desc: '',
+                group_id: null,
+                due_date: '', // Add the due_date property
             },
         };
     },
     created() {
         const taskGroupId = this.$route.params.taskGroupId;
-        this.newTask.taskGroup = taskGroupId;
+        this.newTask.group_id = taskGroupId;
         this.fetchTasks(taskGroupId);
     },
     methods: {
@@ -94,8 +100,9 @@ export default {
                 .then((response) => {
                     // Reset form fields
                     this.newTask.task_name = '';
-                    this.newTask.task_description = '';
-                    alert(response.data.message);
+                    this.newTask.task_desc = '';
+                    this.newTask.due_date = '',
+                        alert(response.data.message);
                 })
                 .catch((error) => {
                     console.error(error);

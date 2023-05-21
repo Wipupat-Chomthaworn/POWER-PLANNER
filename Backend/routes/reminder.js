@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const pool = require("../config");
-const { isLoggedIn } = require('../middlewares/index');//middleware to check is user log in?
+const { isLoggedIn } = require("../middlewares/index"); //middleware to check is user log in?
 
 router = express.Router();
 
@@ -24,7 +24,7 @@ const upload = multer({ storage: storage });
 
 // ---------------------------add taskgroup
 // let userId = "Owena"
-router.post("/api/addTaskGroups",isLoggedIn, async function (req, res, next) {
+router.post("/api/addTaskGroups", isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
@@ -36,22 +36,19 @@ router.post("/api/addTaskGroups",isLoggedIn, async function (req, res, next) {
   // console.log("email : ", req.body.email);
   try {
     let [results_userID] = await conn.query(
-      "SELECT * FROM User_info WHERE user_id=?",[
+      "SELECT * FROM User_info WHERE user_id=?",
+      [
         // req.body.username
-        userId
+        userId,
       ]
     );
-    console.log('user_id', results_userID);
+    console.log("user_id", results_userID);
     results_userID = results_userID[0].user_id;
     // var username = results_userID[0].insertId;
     console.log("userid----------------", results_userID);
     let [results] = await conn.query(
       "INSERT INTO task_group (group_id, group_name, group_color, user_id) VALUES (NULL, ?, ?, ?);",
-      [
-        req.body.group_name,
-        req.body.group_color,
-        results_userID,
-      ]
+      [req.body.group_name, req.body.group_color, results_userID]
     );
     await conn.commit();
     console.log("success group added: ", results + new Date());
@@ -63,7 +60,7 @@ router.post("/api/addTaskGroups",isLoggedIn, async function (req, res, next) {
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
-    res.status(err.code)
+    res.status(err.code);
   } finally {
     // res.status(200);
     console.log("finally group");
@@ -72,7 +69,7 @@ router.post("/api/addTaskGroups",isLoggedIn, async function (req, res, next) {
 });
 
 // ------------------get task_group data
-router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
+router.get("/api/TaskGroups", isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
@@ -93,12 +90,13 @@ router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
 
     // console.log("user_id : ", userId)
     let [results_task_group] = await conn.query(
-      "SELECT * FROM task_group WHERE user_id=?",[
+      "SELECT * FROM task_group WHERE user_id=?",
+      [
         // req.body.username
-        userId
+        userId,
       ]
-      );
-      // results_task_group = results_task_group[0]
+    );
+    // results_task_group = results_task_group[0]
     // console.log('results_task_group', results_task_group);
     console.log("task_group---------------", results_task_group);
     res.json(results_task_group);
@@ -110,7 +108,7 @@ router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
-    res.status(err.code)
+    res.status(err.code);
   } finally {
     // res.status(200);
     console.log("finally group");
@@ -119,79 +117,85 @@ router.get("/api/TaskGroups",isLoggedIn, async function (req, res, next) {
 });
 
 // ------------------get task in task_group
-router.get("/api/TaskGroups/:group_id/tasks",isLoggedIn, async function (req, res, next) {
-  const conn = await pool.getConnection();
-  // Begin transaction
-  console.log("task in group", req.params.group_id)
-  await conn.beginTransaction();
-  let userId = req.user.user_id;
-  let group_id = req.params.group_id
+router.get(
+  "/api/TaskGroups/:group_id/tasks",
+  isLoggedIn,
+  async function (req, res, next) {
+    const conn = await pool.getConnection();
+    // Begin transaction
+    console.log("task in group", req.params.group_id);
+    await conn.beginTransaction();
+    let userId = req.user.user_id;
+    let group_id = req.params.group_id;
 
-  try {
-    // let [results_userID] = await conn.query(
-    //   "SELECT user_id FROM User_info WHERE username=?",[
-    //     // req.body.username
-    //     userId
-    //   ]
-    // );
-    // let user_id = results_userID[0].user_id;
-    
-    let [results_task_group] = await conn.query(
-      "SELECT *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` FROM task WHERE group_id = ?",[
-        // req.body.username
-        req.params.group_id
-      ]
+    try {
+      // let [results_userID] = await conn.query(
+      //   "SELECT user_id FROM User_info WHERE username=?",[
+      //     // req.body.username
+      //     userId
+      //   ]
+      // );
+      // let user_id = results_userID[0].user_id;
+
+      let [results_task_group] = await conn.query(
+        "SELECT *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` FROM task WHERE group_id = ?",
+        [
+          // req.body.username
+          req.params.group_id,
+        ]
       );
       // results_task_group = results_task_group[0]
-    console.log('user_id', userId);
-    console.log("tasks in task_group---------------", results_task_group);
-    res.json(results_task_group);
-    await conn.commit();
-    console.log("success task in group getted", new Date());
-    res.status(200);
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code)
-  } finally {
-    // res.status(200);
-    console.log("finally group");
-    conn.release();
+      console.log("user_id", userId);
+      console.log("tasks in task_group---------------", results_task_group);
+      res.json(results_task_group);
+      await conn.commit();
+      console.log("success task in group getted", new Date());
+      res.status(200);
+    } catch (err) {
+      await conn.rollback();
+      next(err);
+      console.log("error : ", err);
+      // res.send(err.message);
+      res.status(err.code);
+    } finally {
+      // res.status(200);
+      console.log("finally group");
+      conn.release();
+    }
   }
-});
-
+);
 
 // add task
-router.post("/api/Tasks",isLoggedIn, async function (req, res, next) {
+router.post("/api/addTask", isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
   let userId = req.user.user_id;
   try {
-    let insert_task = await conn.query(
-      "INSERT INTO task (task_id, task_name, task_desc, task_status, due_date, created_at, updated_at, group_id, notify_pref) VALUES (null, ?, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'no')",[
+    let [insert_task] = await conn.query(
+      "INSERT INTO task (task_id, task_name, task_desc, task_status, due_date, created_at, updated_at, group_id, notify_pref) " +
+        "VALUES (null, ?, ?, 'Todo', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 'no')",
+      [
         // req.body.username
         req.body.task_name,
         req.body.task_desc,
-        // req.body.due_date,
+        req.body.due_date,
         req.body.group_id,
       ]
-      );
+    );
     // console.log('user_id', results_userID);
-    console.log('ins', insert_task);
+    console.log("ins", insert_task);
 
     // res.json(results_task_group);
     await conn.commit();
     console.log("success task added", new Date());
-    res.status(200).json(insert_task);
+    res.status(200).json({message: "Add Task Success"});
   } catch (err) {
     await conn.rollback();
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
-    res.status(err.code)
+    res.status(err.code);
   } finally {
     // res.status(200);
     console.log("finally add task");
@@ -199,7 +203,7 @@ router.post("/api/Tasks",isLoggedIn, async function (req, res, next) {
   }
 });
 // Get tasks
-router.get("/api/GetTasks",isLoggedIn, async function (req, res, next) {
+router.get("/api/GetTasks", isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction();
@@ -215,13 +219,14 @@ router.get("/api/GetTasks",isLoggedIn, async function (req, res, next) {
     // console.log("result_userId", results_userID);
     // let user_id = results_userID[0].user_id;
     let [results_task] = await conn.query(
-      "Select *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",[
+      "Select *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",
+      [
         // req.body.username
         userId,
       ]
-      );
-      // results_task = results_task[0];
-    console.log('result_task', results_task);
+    );
+    // results_task = results_task[0];
+    console.log("result_task", results_task);
 
     // res.json(results_task_group);
     await conn.commit();
@@ -232,7 +237,7 @@ router.get("/api/GetTasks",isLoggedIn, async function (req, res, next) {
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
-    res.status(err.code)
+    res.status(err.code);
   } finally {
     // res.status(200);
     conn.release();
@@ -246,22 +251,24 @@ router.post("/api/SubTask", async function (req, res, next) {
 
   try {
     let [results_userID] = await conn.query(
-      "SELECT user_id FROM User_info WHERE username=?",[
+      "SELECT user_id FROM User_info WHERE username=?",
+      [
         // req.body.username
-        userId
+        userId,
       ]
     );
     let user_id = results_userID[0].user_id;
     let insert_subtask = await conn.query(
-      "INSERT INTO sub_task (subtask_id, subtask_desc, subtask_status, created_at, updated_at, task_id) VALUES (null, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)",[
+      "INSERT INTO sub_task (subtask_id, subtask_desc, subtask_status, created_at, updated_at, task_id) VALUES (null, ?, 'Todo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)",
+      [
         // req.body.username
         req.body.subtask_desc,
         // req.body.due_date,
         req.body.task_id,
       ]
-      );
-    console.log('user_id', results_userID);
-    console.log('ins', insert_subtask);
+    );
+    console.log("user_id", results_userID);
+    console.log("ins", insert_subtask);
 
     // res.json(results_task_group);
     await conn.commit();
@@ -272,7 +279,7 @@ router.post("/api/SubTask", async function (req, res, next) {
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
-    res.status(err.code)
+    res.status(err.code);
   } finally {
     // res.status(200);
     console.log("finally add subtask");
@@ -386,103 +393,103 @@ router.get("/blogs/:id", function (req, res, next) {
 //decoy
 router.get("/api/groups/:username", function (req, res, next) {
   console.log(req.params.username);
-//   const promise1 = pool.query("SELECT * FROM blogs WHERE id=?", [
-//     req.params.id,
-//   ]);
-//   const promise2 = pool.query("SELECT * FROM comments WHERE blog_id=?", [
-//     req.params.id,
-//   ]);
-//   const promise3 = pool.query(
-//     "SELECT * FROM images WHERE blog_id=? AND comment_id IS NULL",
-//     [req.params.id]
-//   );
+  //   const promise1 = pool.query("SELECT * FROM blogs WHERE id=?", [
+  //     req.params.id,
+  //   ]);
+  //   const promise2 = pool.query("SELECT * FROM comments WHERE blog_id=?", [
+  //     req.params.id,
+  //   ]);
+  //   const promise3 = pool.query(
+  //     "SELECT * FROM images WHERE blog_id=? AND comment_id IS NULL",
+  //     [req.params.id]
+  //   );
 
-//   Promise.all([promise1, promise2, promise3])
-//     .then((results) => {
-//       const blogs = results[0];
-//       const comments = results[1];
-//       const images = results[2];
-//       res.json({
-//         blog: blogs[0][0],
-//         images: images[0],
-//         comments: comments[0],
-//         error: null,
-//       });
-//     })
-//     .catch((err) => {
-//       return next(err);
-//     });
-res.json({
-  groups: [
-    {
-      name: "Personal",
-      color: "pink",
-      tasks: [
-        {
-          task_name: "Workout",
-          task_desc:
-            "Jog for 30 minutes, do 20 pushups, and stretch for 10 minutes",
-          task_status: "not done",
-          notify_preference: "yes",
-          subtasks: [
-            {
-              subtask_name: "Jog for 30 minutes",
-              subtask_status: "not done",
-            },
-            {
-              subtask_name: "Do 20 pushups",
-              subtask_status: "not done",
-            },
-            {
-              subtask_name: "Stretch for 10 minutes",
-              subtask_status: "not done",
-            },
-          ],
-        },
-        {
-          task_name: "Groceries",
-          task_desc: "Buy milk, bread, and eggs",
-          task_status: "done",
-          notify_preference: "no",
-          subtasks: [],
-        },
-      ],
-    },
-    {
-      name: "Work",
-      color: "purple",
-      tasks: [
-        {
-          task_name: "Meeting with boss",
-          task_desc: "Discuss project timeline and deliverables",
-          task_status: "not done",
-          notify_preference: "yes",
-          subtasks: [],
-        },
-        {
-          task_name: "Submit report",
-          task_desc: "Compile weekly progress report for team",
-          task_status: "not done",
-          notify_preference: "yes",
-          subtasks: [
-            {
-              subtask_name: "Gather data",
-              subtask_status: "not done",
-            },
-            {
-              subtask_name: "Write report",
-              subtask_status: "not done",
-            },
-            {
-              subtask_name: "Review report",
-              subtask_status: "not done",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-});
-console.log("sent reminder successfully")
+  //   Promise.all([promise1, promise2, promise3])
+  //     .then((results) => {
+  //       const blogs = results[0];
+  //       const comments = results[1];
+  //       const images = results[2];
+  //       res.json({
+  //         blog: blogs[0][0],
+  //         images: images[0],
+  //         comments: comments[0],
+  //         error: null,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       return next(err);
+  //     });
+  res.json({
+    groups: [
+      {
+        name: "Personal",
+        color: "pink",
+        tasks: [
+          {
+            task_name: "Workout",
+            task_desc:
+              "Jog for 30 minutes, do 20 pushups, and stretch for 10 minutes",
+            task_status: "not done",
+            notify_preference: "yes",
+            subtasks: [
+              {
+                subtask_name: "Jog for 30 minutes",
+                subtask_status: "not done",
+              },
+              {
+                subtask_name: "Do 20 pushups",
+                subtask_status: "not done",
+              },
+              {
+                subtask_name: "Stretch for 10 minutes",
+                subtask_status: "not done",
+              },
+            ],
+          },
+          {
+            task_name: "Groceries",
+            task_desc: "Buy milk, bread, and eggs",
+            task_status: "done",
+            notify_preference: "no",
+            subtasks: [],
+          },
+        ],
+      },
+      {
+        name: "Work",
+        color: "purple",
+        tasks: [
+          {
+            task_name: "Meeting with boss",
+            task_desc: "Discuss project timeline and deliverables",
+            task_status: "not done",
+            notify_preference: "yes",
+            subtasks: [],
+          },
+          {
+            task_name: "Submit report",
+            task_desc: "Compile weekly progress report for team",
+            task_status: "not done",
+            notify_preference: "yes",
+            subtasks: [
+              {
+                subtask_name: "Gather data",
+                subtask_status: "not done",
+              },
+              {
+                subtask_name: "Write report",
+                subtask_status: "not done",
+              },
+              {
+                subtask_name: "Review report",
+                subtask_status: "not done",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+  console.log("sent reminder successfully");
 });
 exports.router = router;
