@@ -15,6 +15,14 @@
               placeholder="Enter your email address"
               required
             />
+            <input
+              v-model="text"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="OTP"
+              type="OTP"
+              placeholder="Enter your OTP address"
+              required
+            />
           </div>
           <div class="flex items-center justify-between">
             <button

@@ -207,9 +207,9 @@ export default {
                     case 'Done':
                         return 'bg-green-500 text-white text-center';
                     case 'Todo':
-                        return 'bg-yellow-500 text-black text-center';
+                        return 'bg-blue-400 text-black text-center';
                     case 'Doing':
-                        return 'bg-blue-500 text-white text-center';
+                        return 'bg-yellow-400 text-white text-center';
                     default:
                         return '';
                 }
@@ -244,7 +244,7 @@ export default {
                     // Find the index of the task in the local array
                     const index = this.tasks.findIndex(t => t.task_id === task.task_id);
                     if (index !== -1) {
-                        //-1 is not found so !-1 is found
+                        //-1 is not found so !-1 is found 
                         // Remove the task from the local array
                         this.tasks.splice(index, 1);
                     }

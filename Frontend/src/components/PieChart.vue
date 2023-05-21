@@ -52,7 +52,7 @@ import axios from '../plugins/axios';
          labels: ['Todo','Doing', 'Done'],
          datasets: [
            {
-             backgroundColor: ['#FF6384', '#36A2EB',  '#936584'],
+             backgroundColor: ['#3b82f6', '#eab308',  '#22c55e'],
              data: [10, 5, 6]
            }
          ]
