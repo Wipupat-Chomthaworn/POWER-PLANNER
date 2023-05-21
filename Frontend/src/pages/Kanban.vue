@@ -21,6 +21,8 @@
                   </button>
                 </div>
               </div>
+              <!-- task_desc sesstion -->
+              <p class="text-sm text-gray-500">{{ task.task_desc }}</p>
             </div>
           </div>
         </div>
@@ -45,6 +47,8 @@
                   </button>
                 </div>
               </div>
+              <!-- task_desc sesstion -->
+              <p class="text-sm text-gray-500">{{ task.task_desc }}</p>
             </div>
           </div>
         </div>
@@ -64,6 +68,8 @@
                   </button>
                 </div>
               </div>
+              <!-- task_desc sesstion -->
+              <p class="text-sm text-gray-500">{{ task.task_desc }}</p>
             </div>
           </div>
         </div>
