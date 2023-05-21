@@ -2,7 +2,7 @@
   <div>
     <SideBar />
     <div class="p-4 sm:ml-64">
-      <h1 class="text-3xl font-bold mb-4">All Tasks</h1>
+      <br>
       <div class="bg-white shadow-md rounded-md p-4">
         <table class="min-w-full">
           <thead>
