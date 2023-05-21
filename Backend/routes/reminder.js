@@ -259,13 +259,16 @@ router.put(
       );
       // results_task = results_task[0];
       console.log("result_task", results_task);
-
-      // res.json(results_task_group);
-      await conn.commit();
-      console.log("success task Updated", new Date());
-      res.status(200).json({
-        message: `Task ${task_id} Is Updated`,
-      });
+      if (results_task.affectedRows === 1) {
+        await conn.commit();
+        console.log("success task Updated", new Date());
+        res.status(200).json({
+          message: `Task ${task_id} Is Updated`,
+        });
+      }
+      else{
+        throw { message: "Invalid Update", code: 400 }; // Throw an error object with a message and a code
+      }
     } catch (err) {
       await conn.rollback();
       next(err);
@@ -273,7 +276,6 @@ router.put(
       // res.send(err.message);
       // res.status(err.code);
       res.status(err.code).send(err.message);
-
     } finally {
       // res.status(200);
       conn.release();
@@ -320,7 +322,6 @@ router.post("/api/SubTask", async function (req, res, next) {
     // res.send(err.message);
     // res.status(err.code);
     res.status(err.code).send(err.message);
-
   } finally {
     // res.status(200);
     console.log("finally add subtask");
