@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const pool = require("../config");
 const { isLoggedIn } = require("../middlewares/index"); //middleware to check is user log in?
+const Joi = require("joi");
 
 router = express.Router();
 
@@ -22,6 +23,27 @@ var storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+const addTaskGroupsSchema = Joi.object({
+  group_name: Joi.string().required(),
+  group_color: Joi.string().required(),
+}).unknown(); // Allow unknown properties;
+
+const updateTasksSchema = Joi.object({
+  task_name: Joi.string().required(),
+  task_id:Joi.number().optional(),
+  task_desc: Joi.string().required(),
+  task_status: Joi.string().valid("Todo", "Doing", "Done").required(),
+  due_date: Joi.date().iso().required(),
+}).unknown(); // Allow unknown properties;
+
+// const kanbanStatusTaskSchema = Joi.object({
+//   task_status: Joi.string().valid("Todo", "Doing", "Done").required(),
+// }).unknown(); // Allow unknown properties;
+
+const addTaskSubtaskSchema = Joi.object({
+  subtask_desc: Joi.string().required(),
+}).unknown(); // Allow unknown properties;
+
 // ---------------------------add taskgroup
 // let userId = "Owena"
 router.post("/api/addTaskGroups", isLoggedIn, async function (req, res, next) {
@@ -35,6 +57,7 @@ router.post("/api/addTaskGroups", isLoggedIn, async function (req, res, next) {
   // console.log("username : ", req.body.first_name);
   // console.log("email : ", req.body.email);
   try {
+    const validatedData = await addTaskGroupsSchema.validateAsync(req.body);
     let [results_userID] = await conn.query(
       "SELECT * FROM User_info WHERE user_id=?",
       [
@@ -60,6 +83,7 @@ router.post("/api/addTaskGroups", isLoggedIn, async function (req, res, next) {
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
+    return res.status(400).json({ error: error.message });
     res.status(err.code);
   } finally {
     // res.status(200);
@@ -253,6 +277,7 @@ router.put(
     let due_date = req.body.due_date;
 
     try {
+      const validatedData = await updateTasksSchema.validateAsync(req.body);
       let [results_task] = await conn.query(
         "UPDATE TASK SET task_name= ?, task_desc = ?, task_status = ?, due_date = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
         [task_name, task_desc, task_status, due_date, task_id]
@@ -265,8 +290,7 @@ router.put(
         res.status(200).json({
           message: `Task ${task_id} Is Updated`,
         });
-      }
-      else{
+      } else {
         throw { message: "Invalid Update", code: 400 }; // Throw an error object with a message and a code
       }
     } catch (err) {
@@ -275,6 +299,7 @@ router.put(
       console.log("error : ", err);
       // res.send(err.message);
       // res.status(err.code);
+
       res.status(err.code).send(err.message);
     } finally {
       // res.status(200);
@@ -297,6 +322,7 @@ router.put(
     let task_status = req.body.task_status;
 
     try {
+      const validatedData = await updateTasksSchema.validateAsync(req.body);
       let [results_task] = await conn.query(
         "UPDATE TASK SET task_status = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
         [task_status, task_id]
@@ -308,8 +334,7 @@ router.put(
         res.status(200).json({
           message: `Task ${task_id} Is Updated`,
         });
-      }
-      else{
+      } else {
         throw { message: "Invalid Update Status", code: 400 }; // Throw an error object with a message and a code
       }
     } catch (err) {
@@ -318,6 +343,8 @@ router.put(
       console.log("error : ", err);
       // res.send(err.message);
       // res.status(err.code);
+      return res.status(400).json({ error: error.message });
+
       res.status(err.code).send(err.message);
     } finally {
       // res.status(200);
@@ -331,15 +358,16 @@ router.delete(
   "/api/deleteTasks/:task_id",
   isLoggedIn,
   async function (req, res, next) {
+    let task_id = req.params.task_id;
+
     const conn = await pool.getConnection();
-    console.log("Delete tasks");
+    console.log("Delete tasks", task_id);
     // Begin transaction
     await conn.beginTransaction();
     let userId = req.user.user_id;
-    let task_id = req.params.task_id;
     try {
       let [results_task] = await conn.query(
-        "delete from sub_TASK where task_id=?",
+        "delete from TASK where task_id=?",
         [task_id]
       );
       console.log("result_task", results_task);
@@ -349,8 +377,7 @@ router.delete(
         res.status(200).json({
           message: `Task ${task_id} Is Deleted`,
         });
-      }
-      else{
+      } else {
         throw { message: "Invalid Delete", code: 400 }; // Throw an error object with a message and a code
       }
     } catch (err) {
@@ -372,26 +399,25 @@ router.delete(
 router.post("/api/:taskId/addSubtask", async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
-  await conn.beginTransaction()
+  await conn.beginTransaction();
   let user = req.user;
-  console.log("add sub")
+  console.log("add sub");
   try {
+    const validatedData = await addTaskSubtaskSchema.validateAsync(req.body);
     let [insert_subtask] = await conn.query(
       "INSERT INTO sub_task (subtask_id, subtask_desc, subtask_status, task_id) VALUES (null, ?, 'Todo', ?)",
-      [
-        req.body.subtask_desc,
-        req.params.taskId,
-      ]
+      [req.body.subtask_desc, req.params.taskId]
     );
     await conn.commit();
     console.log("success subtask added", new Date());
-    res.status(200).send({message:"done"});
+    res.status(200).send({ message: "done" });
   } catch (err) {
     await conn.rollback();
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
     // res.status(err.code);
+    return res.status(400).json({ error: error.message });
     res.status(err.code).send(err.message);
   } finally {
     // res.status(200);
@@ -403,14 +429,12 @@ router.post("/api/:taskId/addSubtask", async function (req, res, next) {
 router.delete("/api/del/:subtaskId", async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
-  await conn.beginTransaction()
+  await conn.beginTransaction();
   let user = req.user;
   try {
     let [insert_subtask] = await conn.query(
       "delete from sub_task where subtask_id = ?",
-      [
-        req.params.subtaskId,
-      ]
+      [req.params.subtaskId]
     );
     // res.json(results_task_group);
     await conn.commit();
@@ -433,14 +457,12 @@ router.delete("/api/del/:subtaskId", async function (req, res, next) {
 router.put("/api/updateSubtask/:subtaskId", async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
-  await conn.beginTransaction()
+  await conn.beginTransaction();
   let user = req.user;
   try {
     let [insert_subtask] = await conn.query(
       "update sub_task set subtask_status='Done' where subtask_id = ?",
-      [
-        req.params.subtaskId,
-      ]
+      [req.params.subtaskId]
     );
     // res.json(results_task_group);
     await conn.commit();
@@ -462,26 +484,26 @@ router.put("/api/updateSubtask/:subtaskId", async function (req, res, next) {
 // -----------------------get subtask
 router.get("/api/:taskId/subtasks", async function (req, res, next) {
   let user = req.user;
-    let [insert_subtask] = await pool.query(
-      "select * from sub_task where task_id = ?",
-      [
-        req.params.taskId,
-      ]
-    );
-    console.log("success subtask getted", new Date());
-    res.status(200).json(insert_subtask);
+  let [insert_subtask] = await pool.query(
+    "select * from sub_task where task_id = ?",
+    [req.params.taskId]
+  );
+  console.log("success subtask getted", new Date());
+  res.status(200).json(insert_subtask);
 });
 // admin
 router.get("/api/viewTask", isLoggedIn, async function (req, res) {
-  let user = req.user
-  if (user.user_type != "admin"){
-    console.log("not an admin")
+  let user = req.user;
+  if (user.user_type != "admin") {
+    console.log("not an admin");
     return res.status(401).send({
-      message:"You are not authorized to view this user"}
-      )
+      message: "You are not authorized to view this user",
+    });
   }
   // Your code here
-  let [allTask] = await pool.query("SELECT *, DATE_FORMAT(updated_at, '%Y-%m-%d') AS `updated_at` FROM `user_info` join task_group using(user_id) join task using(group_id) order by updated_at desc");
+  let [allTask] = await pool.query(
+    "SELECT *, DATE_FORMAT(updated_at, '%Y-%m-%d') AS `updated_at` FROM `user_info` join task_group using(user_id) join task using(group_id) order by updated_at desc"
+  );
   return res.status(200).send({
     allTask: allTask, //sent all Task data from database
   });
