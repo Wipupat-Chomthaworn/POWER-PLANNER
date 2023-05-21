@@ -9,7 +9,7 @@
           <h2 class="text-lg font-medium mb-2">Todo</h2>
           <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="todo" v-dropzone="dropzoneOptions">
             <div v-for="task in tasks" :key="task.task_id" :class="['bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer', { 'text-red-500': isTaskOverdue(task) }]" v-draggable="draggableOptions" :data-id="task.task_id">
-              {{ task.task_name }}
+              <h1 v-if="task.task_status=='Todo'">{{ task.task_name }}</h1>
             </div>
           </div>
         </div>
@@ -17,7 +17,7 @@
           <h2 class="text-lg font-medium mb-2">Doing</h2>
           <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="doing" v-dropzone="dropzoneOptions">
             <div v-for="task in tasks" :key="task.task_id" :class="['bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer', { 'text-red-500': isTaskOverdue(task) }]" v-draggable="draggableOptions" :data-id="task.task_id">
-              {{ task.task_name }}
+              <h1 v-if="task.task_status=='Doing'">{{ task.task_name }}</h1>
             </div>
           </div>
         </div>
@@ -25,7 +25,7 @@
           <h2 class="text-lg font-medium mb-2">Done</h2>
           <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="done" v-dropzone="dropzoneOptions">
             <div v-for="task in tasks" :key="task.task_id" :class="['bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer', { 'text-red-500': isTaskOverdue(task) }]" v-draggable="draggableOptions" :data-id="task.task_id">
-              {{ task.task_name }}
+              <h1 v-if="task.task_status=='Done'">{{ task.task_name }}</h1>
             </div>
           </div>
         </div>
