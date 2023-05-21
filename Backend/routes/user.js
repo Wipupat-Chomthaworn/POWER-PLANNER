@@ -182,6 +182,13 @@ router.get("/api/user", isLoggedIn, async function (req, res) {
   res.status(200).send(req.user);
 });
 router.get("/api/viewUser", isLoggedIn, async function (req, res) {
+  let user = req.user
+  if (user.user_type != "admin"){
+    console.log("not an admin")
+    return res.status(401).send({
+      message:"You are not authorized to view this user"}
+      )
+  }
   // Your code here
   let [allUsers] = await pool.query("SELECT * FROM `user_info`");
   return res.status(200).send({

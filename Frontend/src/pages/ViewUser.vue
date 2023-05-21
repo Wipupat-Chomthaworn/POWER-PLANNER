@@ -54,6 +54,7 @@ export default {
                 })
                 .catch(error => {
                     console.error(error);
+                    alert("You are not authorized to view this user")
                 });
         },
         deleteUser(userId) {
@@ -63,7 +64,7 @@ export default {
                     console.log(`User with ID ${userId} deleted successfully.`);
                 })
                 .catch(error => {
-                    console.error(error);
+                    console.error(error.message);
                 });
         }
     },
