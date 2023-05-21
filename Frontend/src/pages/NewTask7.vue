@@ -27,9 +27,6 @@
 
         <!-- Task list -->
         <h2 class="text-2xl font-bold mb-4" :style="{ backgroundColor: getGroupColor() }">Task List</h2>
-        
-        <div class="overflow-x-auto">
-
         <table class="w-full border">
             <thead>
                 <tr>
@@ -116,7 +113,6 @@
                 </tr>
             </tbody>
         </table>
-    </div>
     </div>
 </template>
 
@@ -240,46 +236,6 @@ export default {
   
 <style scoped>
 /* Add tailwind styles here */
-.overflow-x-auto {
-    overflow-x: auto;
-}
-
-.table {
-    display: table;
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 1rem;
-    background-color: transparent;
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-.table thead th {
-    vertical-align: bottom;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.table tbody+tbody {
-    border-top: 2px solid #e2e8f0;
-}
-
-.table .table {
-    background-color: #fff;
-}
-
-.table-sm th,
-.table-sm td {
-    padding: 0.5rem;
-}
-
-.table-bordered {
-    border: 1px solid #e2e8f0;
-}
-
-.table-bordered th,
-.table-bordered td {
-    border: 1px solid #e2e8f0;
-}
 
 .task-name {
     cursor: pointer;
