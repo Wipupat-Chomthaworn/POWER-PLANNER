@@ -27,23 +27,21 @@
 
         <!-- Task list -->
         <h2 class="text-2xl font-bold mb-4" :style="{ backgroundColor: getGroupColor() }">Task List</h2>
-        
+
         <div class="overflow-x-auto">
 
-        <table class="w-full border">
-            <thead>
-                <tr>
-                    <th class="px-4 py-2 bg-gray-200">Task Name</th>
-                    <th class="px-4 py-2 bg-gray-200">Task Description</th>
-                    <th class="px-4 py-2 bg-gray-200">Task Status</th>
-                    <th class="px-4 py-2 bg-gray-200">Due Date</th>
-                    <th class="px-4 py-2 bg-gray-200">Actions</th> <!-- Added Actions column -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="task in tasks" :key="task.task_id">
-                    <!-- click at task name to router link to subtask page -->
-                    <router-link :to="`/subtasks/${task.task_id}`" class="hover:bg-green-600 active:bg-violet-700">
+            <table class="w-full border">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 bg-gray-200">Task Name</th>
+                        <th class="px-4 py-2 bg-gray-200">Task Description</th>
+                        <th class="px-4 py-2 bg-gray-200">Task Status</th>
+                        <th class="px-4 py-2 bg-gray-200">Due Date</th>
+                        <th class="px-4 py-2 bg-gray-200">Actions</th> <!-- Added Actions column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="task in tasks" :key="task.task_id">
                         <td class="px-4 py-2 TaskNameCSS">
                             <!-- edit task Name -->
                             <template v-if="task.editing">
@@ -52,71 +50,75 @@
                             <template v-else>
                                 {{ task.task_name }}
                             </template>
-
                         </td>
-                    </router-link>
-                    <!-- edit task Description -->
-                    <td class="px-4 py-2">
-                        <template v-if="task.editing">
-                            <textarea v-model="task.task_desc" rows="4" class="form-control" required></textarea>
-                        </template>
-                        <template v-else>
-                            <div v-if="task.task_desc.length > 100">
-                                {{ task.task_desc.slice(0, 100) }}<br>
-                                {{ task.task_desc.slice(100) }}
-                            </div>
-                            <div v-else>
-                                {{ task.task_desc }}
-                            </div>
-                        </template>
-                    </td>
+                        <!-- edit task Description -->
+                        <td class="px-4 py-2">
+                            <template v-if="task.editing">
+                                <textarea v-model="task.task_desc" rows="4" class="form-control" required></textarea>
+                            </template>
+                            <template v-else>
+                                <div v-if="task.task_desc.length > 100">
+                                    {{ task.task_desc.slice(0, 100) }}<br>
+                                    {{ task.task_desc.slice(100) }}
+                                </div>
+                                <div v-else>
+                                    {{ task.task_desc }}
+                                </div>
+                            </template>
+                        </td>
 
-                    <!-- status color -->
-                    <!-- <td :class="getTaskStatusColor(task.task_status, task)">
+                        <!-- status color -->
+                        <!-- <td :class="getTaskStatusColor(task.task_status, task)">
                         {{ task.task_status }}
                     </td> -->
-                    <!-- task status -->
-                    <td class="px-4 py-2" :class="getTaskStatusColor(task.task_status, task)">
-                        <template v-if="task.editing">
-                            <select v-model="task.task_status" class="form-control" required>
-                                <option value="Todo">Todo</option>
-                                <option value="Doing">Doing</option>
-                                <option value="Done">Done</option>
-                            </select>
-                        </template>
-                        <template v-else>
-                            {{ task.task_status }}
-                        </template>
-                    </td>
+                        <!-- task status -->
+                        <td class="px-4 py-2" :class="getTaskStatusColor(task.task_status, task)">
+                            <template v-if="task.editing">
+                                <select v-model="task.task_status" class="form-control" required>
+                                    <option value="Todo">Todo</option>
+                                    <option value="Doing">Doing</option>
+                                    <option value="Done">Done</option>
+                                </select>
+                            </template>
+                            <template v-else>
+                                {{ task.task_status }}
+                            </template>
+                        </td>
 
-                    <!-- edit due_date -->
-                    <td class="px-4 py-2">
-                        <template v-if="task.editing">
-                            <input type="date" v-model="task.due_date" class="form-control" required>
-                        </template>
-                        <template v-else>
-                            {{ task.due_date }}
-                        </template>
-                    </td>
+                        <!-- edit due_date -->
+                        <td class="px-4 py-2">
+                            <template v-if="task.editing">
+                                <input type="date" v-model="task.due_date" class="form-control" required>
+                            </template>
+                            <template v-else>
+                                {{ task.due_date }}
+                            </template>
+                        </td>
 
-                    <td class="px-4 py-2">
-                        <!-- Editing Task -->
-                        <template v-if="task.editing">
-                            <button @click="saveTask(task)"
-                                class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Save</button>
-                            <button @click="cancelEdit(task)"
-                                class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded">Cancel</button>
-                        </template>
-                        <!-- click to edit Task -->
-                        <template v-else>
-                            <button @click="editTask(task)"
-                                class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Edit</button>
-                        </template>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                        <td class="px-4 py-2">
+                            <!-- Editing Task -->
+                            <template v-if="task.editing">
+                                <button @click="saveTask(task)"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Save</button>
+                                <button @click="cancelEdit(task)"
+                                    class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded">Cancel</button>
+                            </template>
+                            <!-- click to edit Task -->
+                            <template v-else>
+                                <button @click="editTask(task)"
+                                    class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Edit</button>
+                                
+                                    <!-- click at button to router link to subtask page -->
+                                <router-link :to="`/subtasks/${task.task_id}`"
+                                    class="bg-blue-500 hover:bg-yellow-400 text-white py-2 px-4 rounded">
+                                    View Subtasks
+                                </router-link>
+                            </template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
