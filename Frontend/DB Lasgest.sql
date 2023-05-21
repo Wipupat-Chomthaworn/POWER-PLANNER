@@ -11,7 +11,7 @@ CREATE TABLE `prefer` (
   `theme` enum('dark','light') NOT NULL DEFAULT 'light',
   `text_size` enum('1','2','3','4') NOT NULL DEFAULT '2',
   PRIMARY KEY (`pref_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1;
 
 
 CREATE TABLE `user_info` (
@@ -29,23 +29,23 @@ CREATE TABLE `user_info` (
   UNIQUE KEY `username` (`username`),
   KEY `pref_id` (`pref_id`),
   CONSTRAINT `user_info_ibfk_1` FOREIGN KEY (`pref_id`) REFERENCES `prefer` (`pref_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1;
 SELECT * FROM webpro.user_info;
 
 CREATE TABLE `task_group` (
   `group_id` int(10) NOT NULL AUTO_INCREMENT,
-  `group_name` varchar(20) NOT NULL,
+  `group_name` varchar(40) NOT NULL,
   `group_color` varchar(7) NOT NULL,
   `user_id` int(10) NOT NULL,
   PRIMARY KEY (`group_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `task_group_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1;
 
 
 CREATE TABLE `task` (
   `task_id` int(10) NOT NULL AUTO_INCREMENT,
-  `task_name` varchar(20) NOT NULL,
+  `task_name` varchar(40) NOT NULL,
   `task_desc` varchar(255) DEFAULT NULL,
   `task_status` enum('Done','Todo','Doing') NOT NULL DEFAULT 'Todo',
   `due_date` date NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `task` (
   PRIMARY KEY (`task_id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `task_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `task_group` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1;
 
 
 CREATE TABLE `sub_task` (
@@ -67,7 +67,7 @@ CREATE TABLE `sub_task` (
   PRIMARY KEY (`subtask_id`),
   KEY `task_id` (`task_id`),
   CONSTRAINT `sub_task_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`task_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB;
 
 
 CREATE TABLE `tokens` (
@@ -78,4 +78,4 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`token_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1;
