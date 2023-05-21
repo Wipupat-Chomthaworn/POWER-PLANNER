@@ -69,7 +69,7 @@ export default {
   methods: {
     createSubtask() {
       axios
-        .post('/api/addSubtask', this.newSubtask)
+        .post(`/api/${this.$route.params.taskId}/addSubtask`, this.newSubtask)
         .then((response) => {
           // Reset form fields
           this.newSubtask.subtask_desc = '';
@@ -100,7 +100,7 @@ export default {
       axios
         .delete(`/api/del/${subtask.subtask_id}`)
         .then((response) => {
-          alert(response.data.message);
+          alert("Deleted");
           this.fetchSubtasks();
         })
         .catch((error) => {

@@ -339,7 +339,7 @@ router.delete(
     let task_id = req.params.task_id;
     try {
       let [results_task] = await conn.query(
-        "delete from TASK where task_id=?",
+        "delete from sub_TASK where task_id=?",
         [task_id]
       );
       console.log("result_task", results_task);
@@ -369,25 +369,23 @@ router.delete(
 );
 
 // -----------------------add subtask
-router.post("/api/:taskId/subtasks", async function (req, res, next) {
+router.post("/api/:taskId/addSubtask", async function (req, res, next) {
   const conn = await pool.getConnection();
   // Begin transaction
   await conn.beginTransaction()
   let user = req.user;
+  console.log("add sub")
   try {
     let [insert_subtask] = await conn.query(
       "INSERT INTO sub_task (subtask_id, subtask_desc, subtask_status, task_id) VALUES (null, ?, 'Todo', ?)",
       [
-        // req.body.username
         req.body.subtask_desc,
-        // req.body.due_date,
         req.params.taskId,
       ]
     );
-    // res.json(results_task_group);
     await conn.commit();
     console.log("success subtask added", new Date());
-    res.status(200).json(insert_subtask);
+    res.status(200).send({message:"done"});
   } catch (err) {
     await conn.rollback();
     next(err);
@@ -409,7 +407,7 @@ router.delete("/api/del/:subtaskId", async function (req, res, next) {
   let user = req.user;
   try {
     let [insert_subtask] = await conn.query(
-      "delete from sub_task where subtask_id = ?)",
+      "delete from sub_task where subtask_id = ?",
       [
         req.params.subtaskId,
       ]
@@ -417,7 +415,7 @@ router.delete("/api/del/:subtaskId", async function (req, res, next) {
     // res.json(results_task_group);
     await conn.commit();
     console.log("success subtask added", new Date());
-    res.status(200).json(insert_subtask);
+    res.status(200).json("Delete success");
   } catch (err) {
     await conn.rollback();
     next(err);
@@ -427,14 +425,14 @@ router.delete("/api/del/:subtaskId", async function (req, res, next) {
     res.status(err.code).send(err.message);
   } finally {
     // res.status(200);
-    console.log("finally add subtask");
+    console.log("finally del subtask");
     conn.release();
   }
 });
 // -----------------------get subtask
 router.get("/api/:taskId/subtasks", async function (req, res, next) {
   let user = req.user;
-    let [insert_subtask] = await conn.query(
+    let [insert_subtask] = await pool.query(
       "select * from sub_task where task_id = ?",
       [
         req.params.taskId,
