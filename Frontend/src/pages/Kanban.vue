@@ -8,31 +8,31 @@
         <div class="w-1/3 p-4">
           <h2 class="text-lg font-medium mb-2">Todo</h2>
           <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="todo" v-dropzone="dropzoneOptions">
-            <div v-for="task in tasks" :key="task.task_id">
-              <div v-if="task.task_status === 'Todo'" class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer" v-draggable="draggableOptions" :data-id="task.task_id">
-                <h1 :class="{ 'text-red-500': isTaskOverdue(task) }">{{ task.task_name }}</h1>
+            <draggable v-model="tasks" :options="draggableOptions">
+              <div v-for="task in filteredTasks('Todo')" :key="task.task_id" class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer" :class="{ 'text-red-500': isTaskOverdue(task) }" :data-id="task.task_id">
+                <h1>{{ task.task_name }}</h1>
               </div>
-            </div>
+            </draggable>
           </div>
         </div>
         <div class="w-1/3 p-4">
           <h2 class="text-lg font-medium mb-2">Doing</h2>
           <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="doing" v-dropzone="dropzoneOptions">
-            <div v-for="task in tasks" :key="task.task_id">
-              <div v-if="task.task_status === 'Doing'" class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer" v-draggable="draggableOptions" :data-id="task.task_id">
-                <h1 :class="{ 'text-red-500': isTaskOverdue(task) }">{{ task.task_name }}</h1>
+            <draggable v-model="tasks" :options="draggableOptions">
+              <div v-for="task in filteredTasks('Doing')" :key="task.task_id" class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer" :class="{ 'text-red-500': isTaskOverdue(task) }" :data-id="task.task_id">
+                <h1>{{ task.task_name }}</h1>
               </div>
-            </div>
+            </draggable>
           </div>
         </div>
         <div class="w-1/3 p-4">
           <h2 class="text-lg font-medium mb-2">Done</h2>
           <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="done" v-dropzone="dropzoneOptions">
-            <div v-for="task in tasks" :key="task.task_id">
-              <div v-if="task.task_status === 'Done'" class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer" v-draggable="draggableOptions" :data-id="task.task_id">
-                <h1 :class="{ 'text-red-500': isTaskOverdue(task) }">{{ task.task_name }}</h1>
+            <draggable v-model="tasks" :options="draggableOptions">
+              <div v-for="task in filteredTasks('Done')" :key="task.task_id" class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer" :class="{ 'text-red-500': isTaskOverdue(task) }" :data-id="task.task_id">
+                <h1>{{ task.task_name }}</h1>
               </div>
-            </div>
+            </draggable>
           </div>
         </div>
       </div>
@@ -101,6 +101,9 @@ export default {
       const dueDate = new Date(task.due_date);
       const currentDate = new Date();
       return dueDate < currentDate;
+    },
+    filteredTasks(status) {
+      return this.tasks.filter(task => task.task_status === status);
     }
   },
   created() {
@@ -108,3 +111,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.draggable {
+  cursor: grab;
+}
+</style>
