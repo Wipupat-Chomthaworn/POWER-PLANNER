@@ -6,8 +6,9 @@
     <div class="flex justify-center">
       <div class="flex w-11/12">
         <div class="w-1/3 p-4">
-          <h2 class="text-lg font-medium mb-2">Todo</h2>
-          <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="todo">
+          <h2 class="text-lg font-medium mb-2 bg-blue-500 text-white p-2 rounded-md">Todo</h2>
+          <div class="bg-white shadow-sm rounded-md p-2 min-h-64 space-y-2" data-status="todo">
+            <!-- Task items here -->
             <div v-for="task in filteredTasks('Todo')" :key="task.task_id"
               class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer task-item"
               :class="{ 'text-red-500': isTaskOverdue(task) }" :data-id="task.task_id">
@@ -24,8 +25,9 @@
           </div>
         </div>
         <div class="w-1/3 p-4">
-          <h2 class="text-lg font-medium mb-2">Doing</h2>
-          <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="doing">
+          <h2 class="text-lg font-medium mb-2 bg-yellow-500 text-white p-2 rounded-md">Doing</h2>
+          <div class="bg-white shadow-sm rounded-md p-2 min-h-64 space-y-2" data-status="doing">
+            <!-- Task items here -->
             <div v-for="task in filteredTasks('Doing')" :key="task.task_id"
               class="bg-gray-100 rounded-md px-2 py-1 mb-2 cursor-pointer task-item"
               :class="{ 'text-red-500': isTaskOverdue(task) }" :data-id="task.task_id">
@@ -47,8 +49,9 @@
           </div>
         </div>
         <div class="w-1/3 p-4">
-          <h2 class="text-lg font-medium mb-2">Done</h2>
-          <div class="bg-white shadow-sm rounded-md p-2 min-h-64" data-status="done">
+          <h2 class="text-lg font-medium mb-2 bg-green-500 text-white p-2 rounded-md">Done</h2>
+          <div class="bg-white shadow-sm rounded-md p-2 min-h-64 space-y-2" data-status="done">
+            <!-- Task items here -->
             <div v-for="task in filteredTasks('Done')" :key="task.task_id"
               class="bg-green-100 rounded-md px-2 py-1 mb-2 cursor-pointer task-item"
               :class="text-green-400" :data-id="task.task_id">
@@ -68,6 +71,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from '../plugins/axios';
