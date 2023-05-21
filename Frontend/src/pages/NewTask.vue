@@ -65,8 +65,21 @@
                     </td>
 
                     <!-- status color -->
-                    <td :class="getTaskStatusColor(task.task_status, task)">
+                    <!-- <td :class="getTaskStatusColor(task.task_status, task)">
                         {{ task.task_status }}
+                    </td> -->
+                <!-- task status -->
+                    <td class="px-4 py-2" :class="getTaskStatusColor(task.task_status, task)">
+                        <template v-if="task.editing">
+                            <select v-model="task.task_status" class="form-control" required>
+                                <option value="Todo">Todo</option>
+                                <option value="Doing">Doing</option>
+                                <option value="Done">Done</option>
+                            </select>
+                        </template>
+                        <template v-else>
+                            {{ task.task_status }}
+                        </template>
                     </td>
 
                     <!-- edit due_date -->
