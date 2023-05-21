@@ -194,8 +194,7 @@ router.post("/api/addTask", isLoggedIn, async function (req, res, next) {
     await conn.rollback();
     next(err);
     console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code);
+    res.status(err.code).send(err.message);
   } finally {
     // res.status(200);
     console.log("finally add task");
@@ -229,7 +228,8 @@ router.get("/api/GetTasks", isLoggedIn, async function (req, res, next) {
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
-    res.status(err.code);
+    // res.status(err.code);
+    res.status(err.code).send(err.message);
   } finally {
     // res.status(200);
     conn.release();
@@ -271,7 +271,9 @@ router.put(
       next(err);
       console.log("error : ", err);
       // res.send(err.message);
-      res.status(err.code);
+      // res.status(err.code);
+      res.status(err.code).send(err.message);
+
     } finally {
       // res.status(200);
       conn.release();
@@ -316,7 +318,9 @@ router.post("/api/SubTask", async function (req, res, next) {
     next(err);
     console.log("error : ", err);
     // res.send(err.message);
-    res.status(err.code);
+    // res.status(err.code);
+    res.status(err.code).send(err.message);
+
   } finally {
     // res.status(200);
     console.log("finally add subtask");
