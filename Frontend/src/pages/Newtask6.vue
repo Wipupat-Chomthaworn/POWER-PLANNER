@@ -30,68 +30,41 @@
         <table class="w-full border">
             <thead>
                 <tr>
+                    <th class="px-4 py-2 bg-gray-200">Edit</th>
                     <th class="px-4 py-2 bg-gray-200">Task Name</th>
                     <th class="px-4 py-2 bg-gray-200">Task Description</th>
                     <th class="px-4 py-2 bg-gray-200">Task Status</th>
                     <th class="px-4 py-2 bg-gray-200">Due Date</th>
-                    <th class="px-4 py-2 bg-gray-200">Actions</th> <!-- Added Actions column -->
+                    <th class="px-4 py-2 bg-gray-200">More</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="task in tasks" :key="task.task_id">
                     <td class="px-4 py-2">
-                        <!-- edit task Name -->
-                        <template v-if="task.editing">
-                            <input type="text" v-model="task.task_name" class="form-control" required>
-                        </template>
-                        <template v-else>
-                            {{ task.task_name }}
-                        </template>
-                    </td>
-                    <!-- edit task Description -->
-                    <td class="px-4 py-2">
-                        <template v-if="task.editing">
-                            <textarea v-model="task.task_desc" rows="4" class="form-control" required></textarea>
-                        </template>
-                        <template v-else>
-                            <div v-if="task.task_desc.length > 100">
-                                {{ task.task_desc.slice(0, 100) }}<br>
-                                {{ task.task_desc.slice(100) }}
-                            </div>
-                            <div v-else>
-                                {{ task.task_desc }}
-                            </div>
-                        </template>
-                    </td>
+                        <!-- link to edit task page -->
+                        <router-link :to="`/tasks/${task.task_id}/subtasks/create`"
+                            class="bg-green-500 hover:bg-green-700 text-white py-1 px-2 rounded">Edit</router-link>
 
-                    <!-- status color -->
+                        <!-- <button @click="editTask(task)"
+                            class="bg-green-500 hover:bg-green-700 text-white py-1 px-2 rounded">Edit</button> -->
+                    </td>
+                    <td class="px-4 py-2">{{ task.task_name }}</td>
+                    <td class="px-4 py-2">
+                        <div v-if="task.task_desc.length > 100">
+                            {{ task.task_desc.slice(0, 100) }}<br>
+                            {{ task.task_desc.slice(100) }}
+                        </div>
+                        <div v-else>
+                            {{ task.task_desc }}
+                        </div>
+                    </td>
                     <td :class="getTaskStatusColor(task.task_status, task)">
                         {{ task.task_status }}
                     </td>
-
-                    <!-- edit due_date -->
+                    <td class="px-4 py-2">{{ task.due_date }}</td>
                     <td class="px-4 py-2">
-                        <template v-if="task.editing">
-                            <input type="date" v-model="task.due_date" class="form-control" required>
-                        </template>
-                        <template v-else>
-                            {{ task.due_date }}
-                        </template>
-                    </td>
-
-                    <td class="px-4 py-2">
-                        <!-- Editing Task -->
-                        <template v-if="task.editing">
-                            <button @click="saveTask(task)"
-                                class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Save</button>
-                            <button @click="cancelEdit(task)"
-                                class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded">Cancel</button>
-                        </template>
-                        <!-- click to edit Task -->
-                        <template v-else>
-                            <button @click="editTask(task)"
-                                class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Edit</button>
-                        </template>
+                        <router-link :to="`/tasks/${task.task_id}/subtasks/create`"
+                            class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Subtask</router-link>
                     </td>
                 </tr>
             </tbody>
@@ -147,12 +120,6 @@ export default {
             axios
                 .get(`/api/TaskGroups/${taskGroupId}/tasks`)
                 .then((response) => {
-                    const tasks = response.data;
-
-                    // Add the 'editing' property to each task
-                    tasks.forEach((task) => {
-                        task.editing = false;
-                    });
                     this.tasks = response.data;
                 })
                 .catch((error) => {
@@ -161,11 +128,12 @@ export default {
         },
         getGroupColor() {
             if (this.tasks.length > 0) {
-                // console.log(this.tasks[0].group_color)
+                console.log(this.tasks[0].group_color)
                 return `backgroundColor: ${this.tasks[0].group_color}`
             }
             else {
-                // console.log('else')
+                console.log('else')
+
                 return `backgroundColor: green`
             }
 
@@ -190,29 +158,7 @@ export default {
                 }
             }
         },
-
-        // mode of task ( edit or not )
-        editTask(task) {
-            task.editing = true;
-        },
-        // to save task ( send to backend )
-        saveTask(task) {
-            axios
-                .put(`/api/updateTasks/${task.task_id}`, task)
-                .then((response) => {
-                    task.editing = false;
-                    alert(response.data.message);
-                })
-                .catch((error) => {
-                    alert("save task error");
-                    console.log('save task error')
-                    console.error(error);
-                });
-        },
-        // toggle mode
-        cancelEdit(task) {
-            task.editing = false;
-        },
+        
     },
 };
 </script>

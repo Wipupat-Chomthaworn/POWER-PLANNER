@@ -189,7 +189,7 @@ router.post("/api/addTask", isLoggedIn, async function (req, res, next) {
     // res.json(results_task_group);
     await conn.commit();
     console.log("success task added", new Date());
-    res.status(200).json({message: "Add Task Success"});
+    res.status(200).json({ message: "Add Task Success" });
   } catch (err) {
     await conn.rollback();
     next(err);
@@ -210,14 +210,6 @@ router.get("/api/GetTasks", isLoggedIn, async function (req, res, next) {
   let userId = req.user.user_id;
 
   try {
-    // let [results_userID] = await conn.query(
-    //   "SELECT user_id FROM User_info WHERE username=?",[
-    //     // req.body.username
-    //     userId
-    //   ]
-    // );
-    // console.log("result_userId", results_userID);
-    // let user_id = results_userID[0].user_id;
     let [results_task] = await conn.query(
       "Select *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` from task JOIN task_group using(group_id) join user_info using(user_id) where user_id=?",
       [
@@ -243,6 +235,51 @@ router.get("/api/GetTasks", isLoggedIn, async function (req, res, next) {
     conn.release();
   }
 });
+
+// Update tasks
+router.put(
+  "/api/updateTasks/:task_id",
+  isLoggedIn,
+  async function (req, res, next) {
+    const conn = await pool.getConnection();
+    console.log("Update tasks");
+    // Begin transaction
+    await conn.beginTransaction();
+    let userId = req.user.user_id;
+    let task_id = req.params.task_id;
+    let task_name = req.body.task_name;
+    let task_desc = req.body.task_desc;
+    let task_status = req.body.task_status;
+    let due_date = req.body.due_date;
+
+    try {
+      let [results_task] = await conn.query(
+        "UPDATE TASK SET task_name= ?, task_desc = ?, task_status = ?, due_date = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
+        [task_name, task_desc, task_status, due_date, task_id]
+      );
+      // results_task = results_task[0];
+      console.log("result_task", results_task);
+
+      // res.json(results_task_group);
+      await conn.commit();
+      console.log("success task Updated", new Date());
+      res.status(200).json({
+        message: `Task ${task_id} Is Updated`,
+      });
+    } catch (err) {
+      await conn.rollback();
+      next(err);
+      console.log("error : ", err);
+      // res.send(err.message);
+      res.status(err.code);
+    } finally {
+      // res.status(200);
+      conn.release();
+      console.log("update task finally");
+    }
+  }
+);
+
 // -----------------------add subtask
 router.post("/api/SubTask", async function (req, res, next) {
   const conn = await pool.getConnection();
