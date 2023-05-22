@@ -76,15 +76,15 @@ router.post("/api/addTaskGroups", isLoggedIn, async function (req, res, next) {
     await conn.commit();
     console.log("success group added: ", results + new Date());
     res.status(200);
-  } catch (err) {
+  } catch (error) {
     await conn.rollback();
     // await conn.query("ALTER TABLE task_group AUTO_INCREMENT = 1;");
 
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
+    next(error);
+    console.log("error : ", error);
+    // res.send(error.message);
     return res.status(400).json({ error: error.message });
-    res.status(err.code);
+    res.status(error.code);
   } finally {
     // res.status(200);
     console.log("finally group");
@@ -113,12 +113,12 @@ router.get("/api/TaskGroups", isLoggedIn, async function (req, res, next) {
     await conn.commit();
     console.log("success group getted", new Date());
     res.status(200);
-  } catch (err) {
+  } catch (error) {
     await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    res.status(err.code);
+    next(error);
+    console.log("error : ", error);
+    // res.send(error.message);
+    res.status(error.code);
   } finally {
     // res.status(200);
     console.log("finally group");
@@ -161,12 +161,12 @@ router.get(
       await conn.commit();
       console.log("success task in group getted", new Date());
       res.status(200);
-    } catch (err) {
+    } catch (error) {
       await conn.rollback();
-      next(err);
-      console.log("error : ", err);
-      // res.send(err.message);
-      res.status(err.code);
+      next(error);
+      console.log("error : ", error);
+      // res.send(error.message);
+      res.status(error.code);
     } finally {
       // res.status(200);
       console.log("finally group");
@@ -200,11 +200,11 @@ router.post("/api/addTask", isLoggedIn, async function (req, res, next) {
     await conn.commit();
     console.log("success task added", new Date());
     res.status(200).json({ message: "Add Task Success" });
-  } catch (err) {
+  } catch (error) {
     await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    res.status(err.code).send(err.message);
+    next(error);
+    console.log("error : ", error);
+    res.status(error.code).send(error.message);
   } finally {
     // res.status(200);
     console.log("finally add task");
@@ -233,13 +233,13 @@ router.get("/api/GetTasks", isLoggedIn, async function (req, res, next) {
     await conn.commit();
     console.log("success task Getted", new Date());
     res.status(200).json(results_task);
-  } catch (err) {
+  } catch (error) {
     await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    // res.status(err.code);
-    res.status(err.code).send(err.message);
+    next(error);
+    console.log("error : ", error);
+    // res.send(error.message);
+    // res.status(error.code);
+    res.status(error.code).send(error.message);
   } finally {
     // res.status(200);
     conn.release();
@@ -279,14 +279,14 @@ router.put(
       } else {
         throw { message: "Invalid Update", code: 400 }; // Throw an error object with a message and a code
       }
-    } catch (err) {
+    } catch (error) {
       await conn.rollback();
-      next(err);
-      console.log("error : ", err);
-      // res.send(err.message);
-      // res.status(err.code);
+      next(error);
+      console.log("error : ", error);
+      // res.send(error.message);
+      // res.status(error.code);
 
-      res.status(err.code).send(err.message);
+      res.status(error.code).send(error.message);
     } finally {
       // res.status(200);
       conn.release();
@@ -323,15 +323,15 @@ router.put(
       } else {
         throw { message: "Invalid Update Status", code: 400 }; // Throw an error object with a message and a code
       }
-    } catch (err) {
+    } catch (error) {
       await conn.rollback();
-      next(err);
-      console.log("error : ", err);
-      // res.send(err.message);
-      // res.status(err.code);
+      next(error);
+      console.log("error : ", error);
+      // res.send(error.message);
+      // res.status(error.code);
       return res.status(400).json({ error: error.message });
 
-      res.status(err.code).send(err.message);
+      res.status(error.code).send(error.message);
     } finally {
       // res.status(200);
       conn.release();
@@ -366,13 +366,13 @@ router.delete(
       } else {
         throw { message: "Invalid Delete", code: 400 }; // Throw an error object with a message and a code
       }
-    } catch (err) {
+    } catch (error) {
       await conn.rollback();
-      next(err);
-      console.log("error : ", err);
-      // res.send(err.message);
-      // res.status(err.code);
-      res.status(err.code).send(err.message);
+      next(error);
+      console.log("error : ", error);
+      // res.send(error.message);
+      // res.status(error.code);
+      res.status(error.code).send(error.message);
     } finally {
       // res.status(200);
       conn.release();
@@ -397,14 +397,14 @@ router.post("/api/:taskId/addSubtask", async function (req, res, next) {
     await conn.commit();
     console.log("success subtask added", new Date());
     res.status(200).send({ message: "done" });
-  } catch (err) {
+  } catch (error) {
     await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    // res.status(err.code);
+    next(error);
+    console.log("error : ", error);
+    // res.send(error.message);
+    // res.status(error.code);
     return res.status(400).json({ error: error.message });
-    res.status(err.code).send(err.message);
+    res.status(error.code).send(error.message);
   } finally {
     // res.status(200);
     console.log("finally add subtask");
@@ -426,13 +426,13 @@ router.delete("/api/del/:subtaskId", async function (req, res, next) {
     await conn.commit();
     console.log("success subtask added", new Date());
     res.status(200).json("Delete success");
-  } catch (err) {
+  } catch (error) {
     await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    // res.status(err.code);
-    res.status(err.code).send(err.message);
+    next(error);
+    console.log("error : ", error);
+    // res.send(error.message);
+    // res.status(error.code);
+    res.status(error.code).send(error.message);
   } finally {
     // res.status(200);
     console.log("finally del subtask");
@@ -454,13 +454,13 @@ router.put("/api/updateSubtask/:subtaskId", async function (req, res, next) {
     await conn.commit();
     console.log("success subtask added", new Date());
     res.status(200).json("Delete success");
-  } catch (err) {
+  } catch (error) {
     await conn.rollback();
-    next(err);
-    console.log("error : ", err);
-    // res.send(err.message);
-    // res.status(err.code);
-    res.status(err.code).send(err.message);
+    next(error);
+    console.log("error : ", error);
+    // res.send(error.message);
+    // res.status(error.code);
+    res.status(error.code).send(error.message);
   } finally {
     // res.status(200);
     console.log("finally del subtask");
