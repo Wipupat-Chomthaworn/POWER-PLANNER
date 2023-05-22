@@ -110,13 +110,13 @@ router.post("/getOTP" , async function (req, res, next) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "murakishopp@gmail.com",
-        pass: "vuxjtsqgsipzdobh",
+        user: "power.owenplanner@gmail.com",
+        pass: "azhzqgwzvritezrj",
       },
     });
   
     const mailOptions = {
-      from: "murakishopp@gmail.com",
+      from: "power.owenplanner@gmail.com",
       to: email,
       subject: "Password Reset",
       text: otp,
@@ -145,6 +145,8 @@ router.put("/reset", async function (req, res, next) {
   const conn = await pool.getConnection();
   await conn.beginTransaction();
   const email = req.body.email;
+  const password = req.body.password;
+
 
   try {
     let [resultsOTP] = await conn.query(

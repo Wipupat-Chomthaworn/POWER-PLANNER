@@ -13,6 +13,9 @@
             <input v-model="otp"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="OTP" type="text" placeholder="Enter your OTP" required />
+            <input v-model="password"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="password" type="password" placeholder="Enter your new password" required />
           </div>
           <div class="flex items-center justify-between">
             <button
@@ -49,6 +52,8 @@
       return {
         email: "",
         otp: "",
+        password: "",
+  
         loading: false,
         message: "",
         error: "",
@@ -61,7 +66,7 @@
         this.error = "";
   
         axios
-          .put("http://localhost:3000/reset", { email: this.email, otp: this.otp })
+          .put("http://localhost:3000/reset", { email: this.email, otp: this.otp, password: this.password })
           .then((response) => {
             this.loading = false;
             this.message = response.data;
@@ -73,7 +78,7 @@
       },
       getotp() {
         axios
-          .post("http://localhost:3000/getOTP", {email:this.email})
+          .post("http://localhost:3000/getOTP", { email: this.email })
           .then((response) => {
             alert(response.data);
           })
