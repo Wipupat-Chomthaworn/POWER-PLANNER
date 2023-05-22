@@ -1,4 +1,5 @@
 <template>
+     <SideBar></SideBar>
   <div class="max-w-lg mx-auto mt-16">
     <h2 class="text-2xl font-bold mb-4">User Profile</h2>
     <div class="flex items-center mb-4">
@@ -53,7 +54,13 @@
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue';
+import SideBar from '../components/SideBar.vue';
+import axios from '../plugins/axios';
 export default {
+  components: {
+      SideBar,Navbar
+   },
   data() {
     return {
       user: {

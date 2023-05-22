@@ -7,11 +7,8 @@ const bcrypt = require('bcrypt');
 async function sendotp(req, res, next) {
     var email
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-    if(req.user.type == "customer"){
-        email = req.user.c_email
-        let otp2 = await argon2.hash(otp)
-        await pool.query("update customer set otp = ? where customer_id = ? ",[otp2, req.user.customer_id])
-    }
+        email = req.user.email
+        await pool.query("update prefer set otp = ? join user_info using(pref_id) where user_id = ? ",[otp, req.user.user_id])
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {

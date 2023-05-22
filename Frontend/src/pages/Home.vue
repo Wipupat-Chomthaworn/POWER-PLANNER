@@ -5,8 +5,7 @@
       <div class="p-4 border-2 border-gray-200 rounded-lg dark:border-gray-700 mt-14">
          <!-- <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800"> -->
          <h1
-            class="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-6xl h1x-5 py-5 text-center mr-2 mb-2"
-         >
+            class="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-6xl h1x-5 py-5 text-center mr-2 mb-2">
             Welcome to Power Planner
             <!-- {{ user.username }} -->
             !
@@ -16,8 +15,11 @@
          <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
             <p class="text-2xl text-gray-400 dark:text-gray-500">
 
-               <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">               You have
-               <span class="text-blue-600 dark:text-blue-500">{{ tasks.length }}</span> task </h1>
+            <h1
+               class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+               You have
+               <span class="text-blue-600 dark:text-blue-500">{{ tasks.length }}</span> task
+            </h1>
             </p>
          </div>
          <div class="grid grid-cols-2 gap-4 mb-4">
@@ -26,27 +28,19 @@
             </div>
             <div class="flex items-center justify-center rounded ">
                <ul>
-               <li class="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{{ this.done }} TaskDone</li>
+                  <li
+                     class="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                     {{ this.done }} TaskDone</li>
 
-               <li class="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{{ this.doing }} TaskDoing</li>
-               
-               <li class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{{ this.todo }} TaskTodo</li></ul>
-            </div>
-            <!-- <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-               <p class="text-2xl text-gray-400 dark:text-gray-500">
-                  A list of upcoming deadlines
-               </p>
-               <ul class="mt-2">
-                  <li v-for="task in tasksDueToday" :key="task.task_id" class="text-lg text-gray-700 dark:text-gray-300">
-                     {{ task.task_name }}
-                  </li>
+                  <li
+                     class="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                     {{ this.doing }} TaskDoing</li>
+
+                  <li
+                     class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                     {{ this.todo }} TaskTodo</li>
                </ul>
             </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-               <p class="text-2xl text-gray-400 dark:text-gray-500">
-                  A section for alerts or notifications
-               </p>
-            </div> -->
          </div>
          <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
             <p class="text-2xl text-gray-400 dark:text-gray-500">
@@ -57,25 +51,14 @@
             <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
                <li class="pb-3 sm:pb-4">
                   <span v-if="task.task_status !== 'Done'">
-                  <router-link :to="`/taskGroups/${task.group_id}/tasks`" class="text-lg text-blue-500 hover:text-yellow-400">
-                     {{ task.task_name }}
-                  </router-link>
-               </span>
+                     <router-link :to="`/taskGroups/${task.group_id}/tasks`"
+                        class="text-lg text-blue-500 hover:text-yellow-400">
+                        {{ task.task_name }}
+                     </router-link>
+                  </span>
                </li>
             </ul>
          </div>
-         <!-- <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-               <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-               <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-               <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-               <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-            </div> -->
       </div>
    </div>
 </template>
@@ -84,7 +67,6 @@
 import Navbar from '../components/Navbar.vue';
 import SideBar from '../components/SideBar.vue';
 import PieChart from '../components/PieChart.vue';
-// import axios from 'axios';
 import axios from '../plugins/axios';
 
 export default {
@@ -97,7 +79,7 @@ export default {
       return {
          tasks: [],
          chartData: null,
-         done : 0,
+         done: 0,
          doing: 0,
          todo: 0,
       };
@@ -108,10 +90,10 @@ export default {
          .then((response) => {
             const tasks = response.data;
             this.tasks = response.data;
-            this.done  = tasks.filter((task) => task.task_status === 'Done').length;
+            this.done = tasks.filter((task) => task.task_status === 'Done').length;
             this.todo = tasks.filter((task) => task.task_status === 'Todo').length;
             this.doing = tasks.filter((task) => task.task_status === 'Doing').length;
-            console.log("getted",this.todo,this.doing,this.done)
+            console.log("getted", this.todo, this.doing, this.done)
          })
          .catch((error) => {
             console.log('home', error.message);
