@@ -24,13 +24,13 @@
             <div id="pie" class="flex items-center justify-center rounded bg-white-50 h-28 dark:bg-gray-800">
                <pie-chart :data="chartData"></pie-chart>
             </div>
-            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+            <div class="flex items-center justify-center rounded ">
                <ul>
-               <li>{{ this.done }} TaskDone</li>
+               <li class="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{{ this.done }} TaskDone</li>
 
-               <li>{{ this.doing }} TaskDoing</li>
+               <li class="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{{ this.doing }} TaskDoing</li>
                
-               <li>{{ this.todo }} TaskTodo</li></ul>
+               <li class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{{ this.todo }} TaskTodo</li></ul>
             </div>
             <!-- <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
                <p class="text-2xl text-gray-400 dark:text-gray-500">

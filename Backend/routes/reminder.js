@@ -30,7 +30,7 @@ const addTaskGroupsSchema = Joi.object({
 
 const updateTasksSchema = Joi.object({
   task_name: Joi.string().required(),
-  task_id:Joi.number().optional(),
+  task_id: Joi.number().optional(),
   task_desc: Joi.string().required(),
   task_status: Joi.string().valid("Todo", "Doing", "Done").required(),
   due_date: Joi.date().iso().required(),
@@ -101,18 +101,6 @@ router.get("/api/TaskGroups", isLoggedIn, async function (req, res, next) {
   console.log("user_id : ", userId);
 
   try {
-    // let [results_userID] = await conn.query(
-    //   "SELECT * FROM User_info WHERE user_id=?",[
-    //     // req.body.username
-    //     userId
-    //   ]
-    // );
-    // console.log("result_userId : ", results_userID)
-
-    // let user_id = results_userID[0].user_id;
-    // let user_id = results_userID[0].user_id;
-
-    // console.log("user_id : ", userId)
     let [results_task_group] = await conn.query(
       "SELECT * FROM task_group WHERE user_id=?",
       [
@@ -120,8 +108,6 @@ router.get("/api/TaskGroups", isLoggedIn, async function (req, res, next) {
         userId,
       ]
     );
-    // results_task_group = results_task_group[0]
-    // console.log('results_task_group', results_task_group);
     console.log("task_group---------------", results_task_group);
     res.json(results_task_group);
     await conn.commit();
@@ -322,7 +308,7 @@ router.put(
     let task_status = req.body.task_status;
 
     try {
-      const validatedData = await updateTasksSchema.validateAsync(req.body);
+      // const validatedData = await kanbanStatusTaskSchema.validateAsync(req.body);
       let [results_task] = await conn.query(
         "UPDATE TASK SET task_status = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
         [task_status, task_id]
