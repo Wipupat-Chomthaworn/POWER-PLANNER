@@ -30,8 +30,8 @@ const addTaskGroupsSchema = Joi.object({
 
 const updateTasksSchema = Joi.object({
   task_name: Joi.string().required(),
-  task_id: Joi.number().optional(),
-  task_desc: Joi.string().required(),
+  task_id: Joi.number().optional().max(10),
+  task_desc: Joi.string().required().max(255),
   task_status: Joi.string().valid("Todo", "Doing", "Done").required(),
   due_date: Joi.date().iso().required(),
 }).unknown(); // Allow unknown properties;
@@ -41,7 +41,7 @@ const updateTasksSchema = Joi.object({
 // }).unknown(); // Allow unknown properties;
 
 const addTaskSubtaskSchema = Joi.object({
-  subtask_desc: Joi.string().required(),
+  subtask_desc: Joi.string().required().max(255),
 }).unknown(); // Allow unknown properties;
 
 // ---------------------------add taskgroup

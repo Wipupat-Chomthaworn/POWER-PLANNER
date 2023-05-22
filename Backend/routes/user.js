@@ -29,14 +29,14 @@ const upload = multer({ storage: storage });
 // const router = express.Router();
 
 const userSchema = Joi.object({
-  email: Joi.string().email().required(),
-  username: Joi.string().optional(),
-  password: Joi.string().required(),
-  confirmPassword: Joi.string().required().valid(Joi.ref("password")),
-  first_name: Joi.string().required(),
-  last_name: Joi.string().required(),
+  email: Joi.string().email().required().max(30),
+  username: Joi.string().optional().max(30),
+  password: Joi.string().required().max(255),
+  confirmPassword: Joi.string().required().valid(Joi.ref("password")).max(255),
+  first_name: Joi.string().required().max(30),
+  last_name: Joi.string().required().max(30),
   phone: Joi.string().required().min(10).max(10),
-});
+}).unknown(); // Allow unknown properties;
 // Create new user
 router.post("/signup", async function (req, res, next) {
   let resultUserJoi = userSchema.validate(req.body, { abortEarly: false });
@@ -100,13 +100,14 @@ router.post("/getOTP" , async function (req, res, next) {
     [email]
   );
   user = user[0];
-  await pool.query(
-    "UPDATE prefer SET otp = ? WHERE pref_id = ?",
-    [otp, user.pref_id]
-  );
-  console.log(otp, user.pref_id)
+
 
   try {
+    await pool.query(
+      "UPDATE prefer SET otp = ? WHERE pref_id = ?",
+      [otp, user.pref_id]
+    );
+    console.log(otp, user.pref_id)
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
