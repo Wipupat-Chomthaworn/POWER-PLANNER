@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const addTaskGroupsSchema = Joi.object({
-  group_name: Joi.string().required(),
+  group_name: Joi.string().required().max(255),
   group_color: Joi.string().required(),
 }).unknown(); // Allow unknown properties;
 

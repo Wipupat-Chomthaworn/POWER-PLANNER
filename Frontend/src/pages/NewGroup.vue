@@ -3,7 +3,7 @@
     <SideBar />
     <div class="p-4 sm:ml-64">
       <h2 class="text-2xl font-bold mb-4">Create a new task group</h2>
-      <form @submit="createTaskGroup" class="mb-4">
+      <form  class="mb-4">
         <div class="flex items-center mb-4">
           <label for="taskGroupName" class="w-32 mr-4">Task group name:</label>
           <input type="text" class="border border-gray-300 px-2 py-1 rounded" id="taskGroupName" v-model="newTaskGroup.group_name" required>
@@ -12,8 +12,8 @@
           <label for="taskGroupColor" class="w-32 mr-4">Task group color:</label>
           <input type="color" class="border border-gray-300 px-2 py-1 rounded" id="taskGroupColor" v-model="newTaskGroup.group_color" required>
         </div>
-        <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded">Create Task Group</button>
-      </form>
+        <button type="submit" @click="createTaskGroup" class="bg-yellow-500 text-white py-2 px-4 rounded">Create Task Group</button>
+</form>
       <hr class="my-6">
       <h2 class="text-2xl font-bold mb-4">
         <span @click="toggleCollapse" style="cursor: pointer;">All task groups:</span>
@@ -58,16 +58,22 @@ export default {
   },
   methods: {
     createTaskGroup() {
-      axios.post('http://localhost:3000/api/addTaskGroups', this.newTaskGroup)
+      if (this.newTaskGroup.group_name.length > 255 || this.newTaskGroup.group_name.length == 0){
+        alert("Invalid group_name")
+      }
+      else{
+        axios.post('http://localhost:3000/api/addTaskGroups', this.newTaskGroup)
         .then((response) => {
           this.newTaskGroup.group_name = '';
           this.newTaskGroup.group_color = '#000000';
           this.getAllTaskGroups();
+          // window.location.reload()
           alert(response);
         })
         .catch((error) => {
           console.error(error);
         });
+      }
     },
     getAllTaskGroups() {
       axios.get('http://localhost:3000/api/taskGroups')
