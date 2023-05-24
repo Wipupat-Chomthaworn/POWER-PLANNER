@@ -155,18 +155,23 @@ export default {
     },
     methods: {
         createTask() {
-            axios
-                .post('http://localhost:3000/api/addTask', this.newTask)
-                .then((response) => {
-                    // Reset form fields
-                    this.newTask.task_name = '';
-                    this.newTask.task_desc = '';
-                    this.newTask.due_date = '',
-                        alert(response.data.message);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            if (this.newTask.task_desc.length > 255 || this.newTask.task_name.length > 40) {
+                alert("Invalid task info")
+            } else {
+                axios
+                    .post('http://localhost:3000/api/addTask', this.newTask)
+                    .then((response) => {
+                        // Reset form fields
+                        this.newTask.task_name = '';
+                        this.newTask.task_desc = '';
+                        this.newTask.due_date = '',
+                            alert(response.data.message);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+
         },
         fetchTasks(taskGroupId) {
             axios

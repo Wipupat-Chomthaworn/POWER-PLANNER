@@ -104,7 +104,6 @@ router.get("/api/TaskGroups", isLoggedIn, async function (req, res, next) {
     let [results_task_group] = await conn.query(
       "SELECT * FROM task_group WHERE user_id=?",
       [
-        // req.body.username
         userId,
       ]
     );
@@ -139,14 +138,6 @@ router.get(
     let group_id = req.params.group_id;
 
     try {
-      // let [results_userID] = await conn.query(
-      //   "SELECT user_id FROM User_info WHERE username=?",[
-      //     // req.body.username
-      //     userId
-      //   ]
-      // );
-      // let user_id = results_userID[0].user_id;
-
       let [results_task_group] = await conn.query(
         "SELECT *, DATE_FORMAT(due_date, '%Y-%m-%d') AS `due_date` FROM task WHERE group_id = ?",
         [

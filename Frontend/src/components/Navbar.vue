@@ -136,7 +136,7 @@ export default {
           this.isLoggedIn = true,
           this.user.username = response.data.username;
           this.user.email = response.data.email;
-          // this.user.Avatar = response.data.Avatar;
+          this.user.Avatar = "http://localhost:5173/src/assets/" + response.data.Avatar;
         })
         .catch(error => {
           console.log(error);

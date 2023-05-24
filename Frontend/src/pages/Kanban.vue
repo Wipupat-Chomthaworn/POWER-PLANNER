@@ -76,7 +76,7 @@
               class="bg-green-100 rounded-md px-2 py-1 mb-2 cursor-pointer task-item" :class="text - green - 400"
               :data-id="task.task_id">
               <div class="flex justify-between items-center">
-                <router-link :to="`http://localhost:5173//taskGroups/${task.group_id}/tasks`">
+                <router-link :to="`/taskGroups/${task.group_id}/tasks`">
                   <h1>{{ task.task_name }}</h1>
                 </router-link>
                 <div>

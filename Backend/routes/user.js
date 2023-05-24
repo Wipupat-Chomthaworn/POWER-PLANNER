@@ -100,8 +100,6 @@ router.post("/getOTP" , async function (req, res, next) {
     [email]
   );
   user = user[0];
-
-
   try {
     await pool.query(
       "UPDATE prefer SET otp = ? WHERE pref_id = ?",
@@ -140,6 +138,44 @@ router.post("/getOTP" , async function (req, res, next) {
     res.status(400).send("cant");
   }
 });
+//update profile
+router.put("/api/updateProfile",isLoggedIn, async function (req,res,next){
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+
+  const username = req.body.username;
+  const firstName = req.body.first_name;
+  const lastName = req.body.last_name;
+  const phone = req.body.phone;
+  const password = req.body.password;
+  const avatar = req.body.avatar;
+   try {
+    // Update user profile
+    const enpassword = await bcrypt.hash(password, 5);
+    let [upUser_info] = await conn.query(
+      "UPDATE user_info SET username = ?, first_name = ?, last_name = ?, phone = ?, password = ? WHERE user_id = ?;",
+      [username, firstName, lastName, phone, enpassword, req.user.id]
+    );
+    let [upPrefer] = await conn.query(
+      "UPDATE prefer SET avatar=? WHERE pref_id = ?;",
+      [avatar, req.user.pref_id]
+    );
+    console.log('upPrefer', upPrefer,'upUser_info',upUser_info)
+    if (upPrefer.affectedRows == 1 && upUser_info.affectedRows == 1){
+      await conn.commit();
+      res.status(200).send("Profile updated successfully");
+    }else{
+      throw {code:401, message:`cant up ${upPrefer, upUser_info}`}
+    }
+  } catch (err) {
+    await conn.rollback();
+    next(err);
+    console.log("Error: ", err);
+    res.status(err.code).send(err.message);
+  } finally {
+    conn.release();
+  }
+})
 
 // Reset password
 router.put("/reset", async function (req, res, next) {
@@ -147,8 +183,6 @@ router.put("/reset", async function (req, res, next) {
   await conn.beginTransaction();
   const email = req.body.email;
   const password = req.body.password;
-
-
   try {
     let [resultsOTP] = await conn.query(
       "SELECT * FROM prefer JOIN user_info WHERE email = ?;",
@@ -161,6 +195,10 @@ router.put("/reset", async function (req, res, next) {
       await conn.query("UPDATE user_info SET password = ? WHERE email = ?;", [
         enpassword,
         req.body.email,
+      ]);
+      await conn.query("UPDATE prefer SET otp = 0 WHERE pref_id = ?;", [
+        // enpassword,
+        resultsOTP.pref_id,
       ]);
       await conn.commit();
       res.status(200).send("reset password ok");
@@ -175,55 +213,6 @@ router.put("/reset", async function (req, res, next) {
   }
 });
 
-// // req otp
-// router.get("/getOTP", sendotp, async function (req, res, next) {
-//   try{
-//     res.status(200)
-//   }catch(err){
-//     next(err);
-//     res.status(400)
-//   }
-
-// });
-// // Reset password
-// router.put("/reset", async function (req, res, next) {
-//   const conn = await pool.getConnection();
-//   // Begin transaction
-//   await conn.beginTransaction();
-//   let email = req.body.email;
-//   console.log("data : ", req.body);
-
-//   try {
-//     let [results_otp] = await conn.query(
-//       "select * from prefer join user_info where email=?;",
-//       [email]
-//     );
-//     if (results_otp.otp == req.body.otp) {
-//       const enpassword = await bcrypt.hash(req.body.password, 5);
-//       console.log("otp----------------", pref_id);
-//       let results = await conn.query(
-//         "UPDATE user_info set password =? where email=?;",
-//         [enpassword, req.body.email]
-//       );
-//       await conn.commit();
-//       console.log("success : ", results);
-//       res.send(200).send("reset password ok");
-//       // res.redirect("http://localhost:3000/blogs/" + req.params.blogId);
-//     }
-//   } catch (err) {
-//     await conn.rollback();
-//     await conn.query("ALTER TABLE user_info AUTO_INCREMENT = 1;");
-
-//     next(err);
-//     console.log("error : ", err);
-//     // res.send(err.message);
-//     res.status(err.code);
-//   } finally {
-//     // res.status(200);
-//     console.log("finally");
-//     conn.release();
-//   }
-// });
 //login user
 router.post("/api/login", async function (req, res, next) {
   const conn = await pool.getConnection();
@@ -284,7 +273,9 @@ router.post("/api/login", async function (req, res, next) {
 
 // admin
 router.get("/api/user", isLoggedIn, async function (req, res) {
-  res.status(200).send(req.user);
+  let [result_avatar] = await pool.query("select * from user_info join prefer using(pref_id) where user_id = ?",[req.user.user_id])
+  // res.status(200).send(req.user);
+  res.status(200).send(result_avatar[0]);
 });
 router.get("/api/viewUser", isLoggedIn, async function (req, res) {
   let user = req.user;

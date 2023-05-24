@@ -4,13 +4,15 @@
     <div class="p-4 sm:ml-64">
       <h2 class="text-2xl font-bold mb-3 mt-5">Create Subtask</h2>
 
-      <form @submit="createSubtask" class="mb-4">
+      <form class="mb-4">
         <div class="form-group">
           <label for="subtaskDescription">Subtask Description:</label>
-          <textarea class="form-control" id="subtaskDescription" v-model="newSubtask.subtask_desc" rows="4" required></textarea>
+          <textarea class="form-control" id="subtaskDescription" v-model="newSubtask.subtask_desc" rows="4"
+            required></textarea>
         </div>
         <br>
-        <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded">Create Subtask</button>
+        <button type="submit" @click="createSubtask" class="bg-yellow-500 text-white py-2 px-4 rounded">Create
+          Subtask</button>
       </form>
 
       <h2 class="text-2xl font-bold mb-4">Subtask List</h2>
@@ -31,8 +33,10 @@
                 {{ subtask.subtask_status }}
               </td>
               <td class="px-4 py-2">
-                <button @click="markAsDone(subtask)" v-if="subtask.subtask_status === 'Todo'" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Mark as Done</button>
-                <button @click="deleteSubtask(subtask)" class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded">Delete</button>
+                <button @click="markAsDone(subtask)" v-if="subtask.subtask_status === 'Todo'"
+                  class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">Mark as Done</button>
+                <button @click="deleteSubtask(subtask)"
+                  class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -68,8 +72,12 @@ export default {
   },
   methods: {
     createSubtask() {
-      axios
-        .post(`/api/${this.$route.params.taskId}/addSubtask`, this.newSubtask)
+      if (this.newSubtask.subtask_desc.length > 255 || this.newSubtask.subtask_desc.length == 0) {
+        alert("Invalid subtask desc character length")
+      }
+      else {
+        axios
+          .post(`/api/${this.$route.params.taskId}/addSubtask`, this.newSubtask)
         .then((response) => {
           // Reset form fields
           this.newSubtask.subtask_desc = '';
@@ -79,6 +87,8 @@ export default {
         .catch((error) => {
           console.error(error);
         });
+      }
+
     },
     fetchSubtasks() {
       axios
@@ -160,5 +170,4 @@ export default {
 .table-bordered th,
 .table-bordered td {
   border: 1px solid #e2e8f0;
-}
-</style>
+}</style>
