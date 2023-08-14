@@ -6,3 +6,4 @@ With customizable features and intuitive design, you can easily manage your task
         take control of your life and easily achieve your goals.</p>
 
  
+using VUE.js
