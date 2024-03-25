@@ -1,5 +1,5 @@
 pipeline {
-    
+
     agent any
     environment {
         REMOTE_HOST = 'g64070103@35.240.146.19'
@@ -10,6 +10,7 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 sshagent([SSH_CREDENTIALS]) {
+                    sh 'ssh ${REMOTE_HOST} "pwd"'
                     sh 'ssh ${REMOTE_HOST} "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -"'
                     sh 'ssh ${REMOTE_HOST} "sudo apt-get install nodejs -y"'
                 }
