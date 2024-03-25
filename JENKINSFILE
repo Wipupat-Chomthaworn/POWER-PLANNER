@@ -29,7 +29,6 @@ pipeline {
                 }
             }
         }
-
         stage('Backend Setup and Run') {
             steps {
                 sshagent([SSH_CREDENTIALS]) {
