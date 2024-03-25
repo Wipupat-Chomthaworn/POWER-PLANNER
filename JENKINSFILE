@@ -14,6 +14,8 @@ pipeline {
                 }
             }
         }
+
+        
         stage('Clone Repository') {
             steps {
                 sshagent([SSH_CREDENTIALS]) {
@@ -30,7 +32,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Backend Setup and Run') {
             steps {
                 sshagent([SSH_CREDENTIALS]) {
