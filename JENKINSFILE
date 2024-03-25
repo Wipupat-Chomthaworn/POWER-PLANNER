@@ -1,4 +1,5 @@
 pipeline {
+    
     agent any
     environment {
         REMOTE_HOST = 'g64070103@35.240.146.19'
@@ -15,7 +16,7 @@ pipeline {
             }
         }
 
-        
+
         stage('Clone Repository') {
             steps {
                 sshagent([SSH_CREDENTIALS]) {
