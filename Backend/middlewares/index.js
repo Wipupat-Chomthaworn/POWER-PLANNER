@@ -1,22 +1,26 @@
+const pool = require("../config");
+
+// Logger middleware
 async function logger(req, res, next) {
     const timestamp = new Date().toISOString().substring(0, 19)
     console.log(`${timestamp} | ${req.method}: ${req.originalUrl}`)
     next()
-} module.exports = { logger }
+}
 
-const pool = require("../config");
-
+// isLoggedIn middleware with Referrer-Policy header
 async function isLoggedIn(req, res, next) {
     let authorization = req.headers.authorization
 
     if (!authorization) {
         console.log("!auth You are not logged in")
+        res.setHeader('Referrer-Policy', 'no-referrer'); // Setting Referrer-Policy header
         return res.status(401).send('You are not logged in')
     }
 
     let [part1, part2] = authorization.split(' ')
     if (part1 !== 'Bearer' || !part2) {
         console.log("!Barer You are not logged in")
+        res.setHeader('Referrer-Policy', 'no-referrer'); // Setting Referrer-Policy header
         return res.status(401).send('You are not logged in')
     }
 
@@ -25,6 +29,7 @@ async function isLoggedIn(req, res, next) {
     const token = tokens[0]
     if (!token) {
         console.log("!token You are not logged in")
+        res.setHeader('Referrer-Policy', 'no-referrer'); // Setting Referrer-Policy header
         return res.status(401).send('You are not logged in')
     }
 
@@ -37,4 +42,6 @@ async function isLoggedIn(req, res, next) {
     req.user = users[0]
 
     next()
-} module.exports = { logger,   isLoggedIn }
+}
+
+module.exports = { logger, isLoggedIn };

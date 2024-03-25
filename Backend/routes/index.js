@@ -3,6 +3,12 @@ const pool = require("../config");
 
 router = express.Router();
 
+// Middleware to set Referrer-Policy header
+router.use((req, res, next) => {
+  res.setHeader('Referrer-Policy', 'no-referrer'); // Or any other desired policy
+  next();
+});
+
 router.get("/", async function (req, res, next) {
   try {
     const [rows, fields] = await pool.query(

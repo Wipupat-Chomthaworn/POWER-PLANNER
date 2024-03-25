@@ -2,6 +2,9 @@ import axios from 'axios'
 
 const instance = axios.create({
     baseURL: `http://34.143.231.153/:3000`,
+    headers: {
+        'Referrer-Policy': 'no-referrer', // Or any other desired policy
+      },
 })
 
 instance.interceptors.request.use(
