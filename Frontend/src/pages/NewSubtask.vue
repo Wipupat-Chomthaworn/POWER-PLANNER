@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import axios from '../plugins/axios';
-import Navbar from '../components/Navbar.vue';
-import SideBar from '../components/SideBar.vue';
+import axios from '@/plugins/axios';
+import Navbar from '@/components/Navbar.vue';
+import SideBar from '@/components/SideBar.vue';
 
 export default {
   name: 'SubtaskPage',

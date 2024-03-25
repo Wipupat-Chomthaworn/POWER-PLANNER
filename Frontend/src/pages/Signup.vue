@@ -63,8 +63,9 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axios from '@/plugins/axios';
   import Swal from 'sweetalert2'
+
   
   export default {
     data() {
@@ -110,7 +111,7 @@
       async submitForm() {
         if (this.validateForm()) {
           try {
-            const response = await axios.post('http://localhost:3000/signup', this.form);
+            const response = await axios.post(`/signup`, this.form);
             console.log(response);
             if (response.status === 200) {
               this.formSubmitted = true;

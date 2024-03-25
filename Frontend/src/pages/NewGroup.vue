@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import axios from '../plugins/axios';
-import Navbar from '../components/Navbar.vue';
-import SideBar from '../components/SideBar.vue';
+import axios from '@/plugins/axios';
+import Navbar from '@/components/Navbar.vue';
+import SideBar from '@/components/SideBar.vue';
 
 export default {
   name: 'NewGroup',
@@ -62,7 +62,7 @@ export default {
         alert("Invalid group_name")
       }
       else{
-        axios.post('http://localhost:3000/api/addTaskGroups', this.newTaskGroup)
+        axios.post('/api/addTaskGroups', this.newTaskGroup)
         .then((response) => {
           this.newTaskGroup.group_name = '';
           this.newTaskGroup.group_color = '#000000';
@@ -76,7 +76,7 @@ export default {
       }
     },
     getAllTaskGroups() {
-      axios.get('http://localhost:3000/api/taskGroups')
+      axios.get('/api/taskGroups')
         .then((response) => {
           this.taskGroups = response.data;
           console.log("res", response);

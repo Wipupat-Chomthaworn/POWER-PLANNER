@@ -9,7 +9,7 @@
 
 <script>
 // import axios from "axios";
-import Navbar from '../components/NavBar.vue';
+import Navbar from '@/components/Navbar.vue'
 export default {
   name: 'App',
   components: {

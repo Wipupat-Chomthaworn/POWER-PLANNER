@@ -31,5 +31,5 @@ app.use(remRouter.router)
 
 
 app.listen(3000, () => {
-  console.log(`Example app listening at http://localhost:3000`)
+  console.log(`Example app listening at http://34.143.231.153:3000`)
 })

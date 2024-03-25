@@ -41,7 +41,7 @@
 </div></div>
 </template>
 <script>
-import axios from 'axios';
+import axios from '@/plugins/axios';
 import Swal from 'sweetalert2';
 
 export default {
@@ -56,7 +56,7 @@ export default {
   methods: {
     async loginUser() {
       try {
-        const response = await axios.post('http://localhost:3000/api/login', {
+        const response = await axios.post('/api/login', {
           email: this.email,
           password: this.password
         });

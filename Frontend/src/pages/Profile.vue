@@ -69,7 +69,7 @@
 <script>
 import Navbar from '../components/Navbar.vue';
 import SideBar from '../components/SideBar.vue';
-import axios from '../plugins/axios';
+import axios from '@/plugins/axios';
 export default {
   components: {
     SideBar, Navbar

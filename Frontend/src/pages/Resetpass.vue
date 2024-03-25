@@ -45,7 +45,7 @@
   </template>
   
   <script>
-  import axios from "axios";
+  import axios from '@/plugins/axios';
   
   export default {
     data() {
@@ -66,7 +66,7 @@
         this.error = "";
   
         axios
-          .put("http://localhost:3000/reset", { email: this.email, otp: this.otp, password: this.password })
+          .put(`/reset`, { email: this.email, otp: this.otp, password: this.password })
           .then((response) => {
             this.loading = false;
             this.message = response.data;
@@ -78,7 +78,7 @@
       },
       getotp() {
         axios
-          .post("http://localhost:3000/getOTP", { email: this.email })
+          .post("/getOTP", { email: this.email })
           .then((response) => {
             alert(response.data);
           })

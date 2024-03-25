@@ -61,7 +61,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import axios from '@/plugins/axios';
 
 export default {
   name: "AddTask",
@@ -86,7 +86,7 @@ export default {
         notify_pref: this.notify_pref,
       };
       axios
-        .post("http://localhost:3000/api/tasks/", newTask)
+        .post("/api/tasks/", newTask)
         .then((res) => {
           console.log(res.data);
           this.$router.push({ name: "TaskList", params: { group_id: this.group_id } });
@@ -101,7 +101,7 @@ export default {
     const groupId = this.$route.params.groupId;
 
     // make a GET request to the backend to get the group data
-    axios.get(`http://localhost:3000/api/TaskGroups/${groupId}`).then(response => {
+    axios.get(`/api/TaskGroups/${groupId}`).then(response => {
       this.group = response.data;
     });
 

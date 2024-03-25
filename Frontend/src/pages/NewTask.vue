@@ -126,10 +126,10 @@
 
 <script>
 //   import axios from 'axios';
-import axios from '../plugins/axios';
+import axios from '@/plugins/axios';
 
-import Navbar from '../components/Navbar.vue';
-import SideBar from '../components/SideBar.vue';
+import Navbar from '@/components/Navbar.vue';
+import SideBar from '@/components/SideBar.vue';
 
 export default {
     name: 'CreateTask',
@@ -159,7 +159,7 @@ export default {
                 alert("Invalid task info")
             } else {
                 axios
-                    .post('http://localhost:3000/api/addTask', this.newTask)
+                    .post('/api/addTask', this.newTask)
                     .then((response) => {
                         // Reset form fields
                         this.newTask.task_name = '';

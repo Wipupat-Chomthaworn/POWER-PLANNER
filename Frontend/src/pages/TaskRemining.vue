@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import SideBar from '../components/SideBar.vue';
-import axios from 'axios';
+import SideBar from '@/components/SideBar.vue';
+import axios from '@/plugins/axios';
 export default {
   components: { SideBar },
   data() {
@@ -37,7 +37,7 @@ export default {
   methods: {
   },
   mounted() {
-    axios.get('http://localhost:3000/api/groups/1')
+    axios.get(`/api/groups/1`)
       .then(response => {
         this.groups = response.data.groups;
         console.log("fetch groups successful")
