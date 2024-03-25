@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-    baseURL: `http://${process.env.BackEndIP}:3000`,
+    baseURL: `http://34.143.231.153/:3000`,
 })
 
 instance.interceptors.request.use(
