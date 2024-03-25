@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    environment {
+        REMOTE_HOST = 'g64070103@35.240.146.19'
+        SSH_CREDENTIALS = 'SSH'
+    }
+
+    stages {
+        stage('Setup Environment') {
+            steps {
+                sshagent([SSH_CREDENTIALS]) {
+                    sh 'ssh ${REMOTE_HOST} "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -"'
+                    sh 'ssh ${REMOTE_HOST} "sudo apt-get install nodejs -y"'
+                }
+            }
+        }
+        stage('Clone Repository') {
+            steps {
+                sshagent([SSH_CREDENTIALS]) {
+                    sh 'ssh ${REMOTE_HOST} "git clone -b Deploy https://github.com/Wipupat-Chomthaworn/POWER-PLANNER.git"'
+                    sh 'ssh ${REMOTE_HOST} "chmod -R a+rwx POWER-PLANNER"'
+                }
+            }
+        }
+        stage('Frontend Setup and Run') {
+            steps {
+                sshagent([SSH_CREDENTIALS]) {
+                    sh 'ssh ${REMOTE_HOST} "cd POWER-PLANNER/Frontend && rm -rf node_modules && npm install && npm run dev"'
+                }
+            }
+        }
+        stage('Backend Setup and Run') {
+            steps {
+                sshagent([SSH_CREDENTIALS]) {
+                    sh 'ssh ${REMOTE_HOST} "cd POWER-PLANNER/Backend && rm -rf node_modules && npm install && nodemon"'
+                }
+            }
+        }
+    }
+}
