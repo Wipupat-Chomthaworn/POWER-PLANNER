@@ -59,7 +59,7 @@ router.post("/api/addTaskGroups", isLoggedIn, async function (req, res, next) {
   try {
     const validatedData = await addTaskGroupsSchema.validateAsync(req.body);
     let [results_userID] = await conn.query(
-      "SELECT * FROM User_info WHERE user_id=?",
+      "SELECT * FROM user_info WHERE user_id=?",
       [
         // req.body.username
         userId,
@@ -256,7 +256,7 @@ router.put(
     try {
       const validatedData = await updateTasksSchema.validateAsync(req.body);
       let [results_task] = await conn.query(
-        "UPDATE TASK SET task_name= ?, task_desc = ?, task_status = ?, due_date = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
+        "UPDATE task SET task_name= ?, task_desc = ?, task_status = ?, due_date = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
         [task_name, task_desc, task_status, due_date, task_id]
       );
       // results_task = results_task[0];
@@ -301,7 +301,7 @@ router.put(
     try {
       // const validatedData = await kanbanStatusTaskSchema.validateAsync(req.body);
       let [results_task] = await conn.query(
-        "UPDATE TASK SET task_status = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
+        "UPDATE task SET task_status = ?, updated_at = CURRENT_TIMESTAMP where task_id=?",
         [task_status, task_id]
       );
       console.log("result_task", results_task);
@@ -344,7 +344,7 @@ router.delete(
     let userId = req.user.user_id;
     try {
       let [results_task] = await conn.query(
-        "delete from TASK where task_id=?",
+        "delete from task where task_id=?",
         [task_id]
       );
       console.log("result_task", results_task);
